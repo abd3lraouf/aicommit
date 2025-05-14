@@ -91,7 +91,53 @@ This authentication implementation enhances security and follows modern industry
 Fixes #42
 \`\`\`
 
-IMPORTANT: Output should contain ONLY the commit message itself without any other text.`;
+## CRITICAL INSTRUCTIONS ##
+
+1. ONLY output the commit message text itself - NOTHING ELSE
+2. DO NOT include any commentary, explanations, or notes about what you did
+3. DO NOT start with phrases like "Here's a commit message" or "This commit message..."
+4. DO NOT wrap the message in quotes, backticks, or any other markers EXCEPT for the required tags below
+5. DO NOT add any text before or after the commit message itself
+6. The output will be used AS-IS in a git commit command
+7. ANY text you generate will be included in the git history
+8. ALWAYS wrap your commit message EXACTLY with <commit-start> and <commit-end> tags
+
+Your output should look EXACTLY like this format:
+
+<commit-start>
+feat(scope): description
+
+Body of the commit message...
+<commit-end>
+
+Examples:
+
+<commit-start>
+feat(auth): add OAuth2 authentication
+
+This authentication implementation enhances security and follows modern industry standards, allowing users to sign in with popular providers without creating new credentials.
+
+- Add login screen with provider selection
+- Implement token management for Google auth
+- Create secure token storage
+- Add auto refresh for expired tokens
+- Update user profile to display auth method
+
+Fixes #42
+<commit-end>
+
+<commit-start>
+fix(ui): resolve button alignment issue in mobile view
+
+Ensures consistent UI appearance across all device sizes by correcting flexbox layout properties that were causing alignment problems on smaller screens.
+
+- Adjust margin and padding values
+- Add proper media queries
+- Fix flexbox alignment properties
+- Update responsive container styles
+
+Fixes #123
+<commit-end>`;
   }
 
   /**
@@ -121,7 +167,8 @@ IMPORTANT: Output should contain ONLY the commit message itself without any othe
       
       if (emoji) {
         // Replace the first line with the emoji-prefixed version
-        return commitMessage.replace(firstLine, `${emoji} ${firstLine}`);
+        lines[0] = `${emoji} ${firstLine}`;
+        return lines.join('\n');
       }
     }
     
@@ -177,4 +224,4 @@ IMPORTANT: Output should contain ONLY the commit message itself without any othe
     // Enhance with emojis and formatting
     return this.enhanceCommitMessage(rawCommitMessage);
   }
-} 
+}

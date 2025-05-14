@@ -17,6 +17,7 @@ export interface CliOptions {
   dryRun: boolean;
   interactive: boolean;
   verbose: boolean;
+  debug: boolean;
 }
 
 export class CliPresenter {
@@ -45,6 +46,11 @@ export class CliPresenter {
         description: 'Show verbose output with emojis and formatting',
         default: true
       })
+      .option('debug', {
+        type: 'boolean',
+        description: 'Enable debug logging for troubleshooting',
+        default: false
+      })
       .help()
       .alias('help', 'h')
       .parseSync();
@@ -52,7 +58,8 @@ export class CliPresenter {
     return {
       dryRun: parsedArgs['dry-run'] || false,
       interactive: parsedArgs['interactive'] || false,
-      verbose: parsedArgs['verbose'] !== false // Default to true unless explicitly set to false
+      verbose: parsedArgs['verbose'] !== false, // Default to true unless explicitly set to false
+      debug: parsedArgs['debug'] || false
     };
   }
 
@@ -104,7 +111,7 @@ export class CliPresenter {
     const boxenOptions = {
       padding: 1,
       margin: 1,
-      borderStyle: 'round',
+      borderStyle: 'round' as any,
       borderColor: 'cyan',
       backgroundColor: '#222'
     };
@@ -136,7 +143,7 @@ export class CliPresenter {
     const boxenOptions = {
       padding: 1,
       margin: 1,
-      borderStyle: 'round',
+      borderStyle: 'round' as any,
       borderColor: 'cyan',
       backgroundColor: '#222'
     };

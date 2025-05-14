@@ -9,6 +9,7 @@ import { AIRepository } from './core/repositories/ai-repository';
 import { GitRepositoryImpl } from './frameworks/git/git-repository-impl';
 import { AmazonQRepositoryImpl } from './frameworks/amazon-q/amazon-q-repository-impl';
 import { CliPresenter, CliOptions } from './frameworks/cli/cli-presenter';
+import { setDebugMode } from './frameworks/cli/debug';
 
 export class App {
   private gitRepository: GitRepository;
@@ -43,6 +44,13 @@ export class App {
     try {
       // If no options provided, parse from command line
       const cliOptions = options || this.cliPresenter.parseArguments();
+      
+      // Set debug mode if enabled
+      if (cliOptions.debug) {
+        setDebugMode(true);
+        console.log('Debug mode enabled. Additional information will be displayed.');
+        console.log('Tag extraction feature enabled: Commit messages will be extracted using <commit-start> and <commit-end> tags');
+      }
       
       // Show welcome message in verbose mode
       if (cliOptions.verbose) {
@@ -98,4 +106,4 @@ export class App {
       return 1;
     }
   }
-} 
+}

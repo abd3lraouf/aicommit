@@ -51,10 +51,7 @@
     "yargs": "^17.7.2"
   },
   "devDependencies": {
-    "@types/boxen": "^3.0.1",
-    "@types/figures": "^3.0.4",
     "@types/jest": "29.5.14",
-    "@types/log-symbols": "^4.0.3",
     "@types/node": "22.15.18",
     "@types/yargs": "^17.0.33",
     "typescript": "^5.8.3"
