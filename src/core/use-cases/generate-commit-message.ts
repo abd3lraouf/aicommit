@@ -184,14 +184,46 @@ Fixes #123
     // First add emojis
     let emojifiedMessage = this.addEmojiToCommitMessage(commitMessage);
     
-    // Make sure there's a blank line after the first line
     const lines = emojifiedMessage.split('\n');
+    
+    // Make sure there's a blank line after the first line (between title and body)
     if (lines.length > 1 && lines[1].trim() !== '') {
       lines.splice(1, 0, '');
-      emojifiedMessage = lines.join('\n');
     }
     
-    return emojifiedMessage;
+    // Process the body of the commit message (starting from line 2)
+    if (lines.length > 2) {
+      let i = 2;
+      let inBulletList = false;
+      
+      while (i < lines.length) {
+        const currentLine = lines[i].trim();
+        const prevLine = i > 2 ? lines[i-1].trim() : '';
+        
+        // Check if this line is a bullet point
+        const isBullet = currentLine.startsWith('-') || currentLine.startsWith('*');
+        
+        // Handle bullet points - don't add blank lines between bullet points
+        if (isBullet) {
+          inBulletList = true;
+          i++;
+          continue;
+        }
+        
+        // If we're transitioning out of a bullet list or between paragraphs, ensure proper spacing
+        if ((inBulletList && currentLine !== '') || 
+            (prevLine !== '' && currentLine !== '' && !prevLine.startsWith('-') && !prevLine.startsWith('*'))) {
+          // Add a blank line before starting a new paragraph
+          lines.splice(i, 0, '');
+          i++;
+          inBulletList = false;
+        }
+        
+        i++;
+      }
+    }
+    
+    return lines.join('\n');
   }
 
   /**
