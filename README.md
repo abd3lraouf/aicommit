@@ -2,13 +2,15 @@
 
 A smart Git commit message generator that uses Amazon Q to create conventional commit messages with emojis.
 
-![npm version](https://img.shields.io/npm/v/aicommit)
-![license](https://img.shields.io/npm/l/aicommit)
-![downloads](https://img.shields.io/npm/dm/aicommit)
+![npm version](https://img.shields.io/npm/v/@abd3lraouf/aicommit)
+![license](https://img.shields.io/npm/l/@abd3lraouf/aicommit)
+![downloads](https://img.shields.io/npm/dm/@abd3lraouf/aicommit)
 
 ## Overview
 
 AICommit analyzes your Git changes and leverages Amazon Q to automatically generate high-quality conventional commit messages. It follows best practices, adds appropriate emojis based on commit type, and streamlines your Git workflow.
+
+> **Note**: This package is published under the scoped name `@abd3lraouf/aicommit` on npm.
 
 ## Prerequisites
 
@@ -23,21 +25,21 @@ AICommit analyzes your Git changes and leverages Amazon Q to automatically gener
 Install globally to use `aicommit` as a command from anywhere:
 
 ```bash
-npm install -g aicommit
+npm install -g @abd3lraouf/aicommit
 # or 
-pnpm install -g aicommit
+pnpm install -g @abd3lraouf/aicommit
 # or
-yarn global add aicommit
+yarn global add @abd3lraouf/aicommit
 ```
 
 ### Local Installation
 
 ```bash
-npm install aicommit
+npm install @abd3lraouf/aicommit
 # or
-pnpm install aicommit
+pnpm install @abd3lraouf/aicommit
 # or
-yarn add aicommit
+yarn add @abd3lraouf/aicommit
 ```
 
 ### Verifying Installation
@@ -180,4 +182,5 @@ MIT
 Abdelraouf Sabri
 - Email: hello@abd3lraouf.dev
 - Website: https://abd3lraouf.dev
-- Repository: https://github.com/abd3lraouf/aicommit 
+- Repository: https://github.com/abd3lraouf/aicommit
+- NPM Package: https://www.npmjs.com/package/@abd3lraouf/aicommit 
