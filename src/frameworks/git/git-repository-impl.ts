@@ -6,8 +6,11 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
 import * as child_process from 'child_process';
+import chalk from 'chalk';
+import figures from 'figures';
 import { GitRepository } from '../../core/repositories/git-repository';
 import { GitStatus, FileChanges } from '../../core/entities/git';
+import { styles } from '../cli/styles';
 
 export class GitRepositoryImpl implements GitRepository {
   /**
@@ -71,8 +74,22 @@ export class GitRepositoryImpl implements GitRepository {
       
       // If no staged changes and stageAll is true, stage all changes
       if (!stagedFiles.trim() && stageAll) {
-        console.log('No staged changes. Staging all changes...');
+        console.log(styles.processText('No staged changes. Staging all changes...'));
         child_process.execSync('git add .');
+        
+        // Get newly staged files for display
+        const newlyStagedFiles = child_process.execSync('git diff --staged --name-only', { encoding: 'utf8' });
+        if (newlyStagedFiles.trim()) {
+          console.log(styles.successText('Successfully staged files:'));
+          newlyStagedFiles.split('\n').filter(f => f.trim()).forEach(file => {
+            console.log(styles.bullet(file));
+          });
+        }
+      } else if (stagedFiles.trim()) {
+        console.log(styles.processText('Committing staged files:'));
+        stagedFiles.split('\n').filter(f => f.trim()).forEach(file => {
+          console.log(styles.bullet(file));
+        });
       }
       
       // Write the commit message to a temp file
@@ -81,14 +98,16 @@ export class GitRepositoryImpl implements GitRepository {
       
       try {
         // Execute the git commit command using the temp file
+        console.log(styles.processText('Executing git commit...'));
         child_process.execSync(`git commit -F ${tempFile}`, { stdio: 'inherit' });
+        console.log(styles.successText('Commit successful!'));
         return true;
       } finally {
         // Clean up the temp file
         fs.unlinkSync(tempFile);
       }
     } catch (error) {
-      console.error(`Failed to commit: ${error}`);
+      console.error(styles.errorText(`Failed to commit: ${error}`));
       return false;
     }
   }

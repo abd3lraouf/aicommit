@@ -8,10 +8,15 @@ import * as os from 'os';
 import * as child_process from 'child_process';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
+import chalk from 'chalk';
+import boxen from 'boxen';
+import figures from 'figures';
+import { styles } from './styles';
 
 export interface CliOptions {
   dryRun: boolean;
   interactive: boolean;
+  verbose: boolean;
 }
 
 export class CliPresenter {
@@ -34,13 +39,20 @@ export class CliPresenter {
         description: 'Edit the commit message before committing',
         default: false
       })
+      .option('verbose', {
+        alias: 'v',
+        type: 'boolean',
+        description: 'Show verbose output with emojis and formatting',
+        default: true
+      })
       .help()
       .alias('help', 'h')
       .parseSync();
 
     return {
       dryRun: parsedArgs['dry-run'] || false,
-      interactive: parsedArgs['interactive'] || false
+      interactive: parsedArgs['interactive'] || false,
+      verbose: parsedArgs['verbose'] !== false // Default to true unless explicitly set to false
     };
   }
 
@@ -71,7 +83,7 @@ export class CliPresenter {
    * @param message Success message to display
    */
   showSuccess(message: string): void {
-    console.log(message);
+    console.log(styles.successText(message));
   }
 
   /**
@@ -79,7 +91,7 @@ export class CliPresenter {
    * @param message Error message to display
    */
   showError(message: string): void {
-    console.error(message);
+    console.error(styles.errorText(message));
   }
 
   /**
@@ -87,7 +99,79 @@ export class CliPresenter {
    * @param message Commit message to display
    */
   showDryRunMessage(message: string): void {
-    console.log('Dry run mode. The commit message would be:');
-    console.log('\n' + message + '\n');
+    console.log(styles.infoText('Dry run mode. The commit message would be:'));
+    
+    const boxenOptions = {
+      padding: 1,
+      margin: 1,
+      borderStyle: 'round',
+      borderColor: 'cyan',
+      backgroundColor: '#222'
+    };
+    
+    console.log(boxen(message, boxenOptions));
   }
-} 
+
+  /**
+   * Display a verbose process message with step information
+   * @param message Message describing the current process step
+   */
+  showProcess(message: string, options?: { verbose?: boolean }): void {
+    const shouldShow = options?.verbose ?? true;
+    if (shouldShow) {
+      console.log(styles.processText(message));
+    }
+  }
+
+  /**
+   * Display a commit message with styling
+   * @param message The commit message to display
+   * @param title Optional title to display before the message
+   */
+  showCommitMessage(message: string, title?: string): void {
+    if (title) {
+      console.log(`\n${chalk.bold(title)}\n`);
+    }
+    
+    const boxenOptions = {
+      padding: 1,
+      margin: 1,
+      borderStyle: 'round',
+      borderColor: 'cyan',
+      backgroundColor: '#222'
+    };
+    
+    console.log(boxen(message, boxenOptions));
+  }
+  
+  /**
+   * Display a staged files summary
+   * @param stagedFiles The list of staged files
+   */
+  showStagedFiles(stagedFiles: string): void {
+    if (!stagedFiles.trim()) {
+      console.log(styles.warningText('No staged files'));
+      return;
+    }
+    
+    console.log(`\n${chalk.bold('Staged files:')}`);
+    const files = stagedFiles.split('\n').filter(f => f.trim());
+    files.forEach(file => {
+      console.log(styles.bullet(file));
+    });
+    console.log();
+  }
+  
+  /**
+   * Display a step indicator (e.g., 1/3, 2/3, etc.)
+   * @param current Current step
+   * @param total Total steps
+   * @param message Message describing the step
+   */
+  showStep(current: number, total: number, message: string, options?: { verbose?: boolean }): void {
+    const shouldShow = options?.verbose ?? true;
+    if (shouldShow) {
+      console.log(`\n${styles.step(current, total)} ${chalk.bold(message)}\n`);
+    }
+  }
+}

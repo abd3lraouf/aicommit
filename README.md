@@ -72,6 +72,7 @@ npx aicommit
 
 - `--dry-run` (`-d`): Generate a commit message without actually committing changes
 - `--interactive` (`-i`): Enable interactive mode to edit the commit message before committing
+- `--verbose` (`-v`): Enable detailed output with styled messages and emojis (default: true)
 - `--help` (`-h`): Show help information
 
 ### Examples
@@ -82,6 +83,9 @@ aicommit --interactive
 
 # Generate message only without committing (dry run)
 aicommit --dry-run
+
+# Disable verbose output (minimal output mode)
+aicommit --no-verbose
 ```
 
 ## Features
@@ -92,6 +96,8 @@ aicommit --dry-run
 - Follows the Conventional Commits specification
 - Interactive mode for reviewing and editing messages
 - Intelligently handles staged/unstaged changes
+- Beautiful, colored terminal output with progress indicators
+- Verbose mode with detailed, stylized process information
 - Enhanced with clean architecture for maintainability and extensibility
 
 ## Commit Type Emojis
