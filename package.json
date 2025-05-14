@@ -1,0 +1,56 @@
+{
+  "name": "aicommit",
+  "version": "1.0.0",
+  "description": "Amazon Q Git Commit Script - Generate AI-powered commit messages with emojis",
+  "main": "dist/index.js",
+  "bin": {
+    "aicommit": "./dist/index.js"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsc --watch",
+    "prepublishOnly": "npm run build",
+    "clean": "rm -rf dist",
+    "prebuild": "npm run clean",
+    "postinstall": "npm run build",
+    "postbuild": "chmod +x dist/index.js"
+  },
+  "keywords": [
+    "git",
+    "commit",
+    "amazon-q",
+    "ai",
+    "conventional-commits",
+    "emoji",
+    "commit-message"
+  ],
+  "author": "Abdelraouf Sabri <hello@abd3lraouf.dev> (https://abd3lraouf.dev)",
+  "homepage": "https://github.com/abd3lraouf/aicommit#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/abd3lraouf/aicommit"
+  },
+  "bugs": {
+    "url": "https://github.com/abd3lraouf/aicommit/issues"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "yargs": "^17.7.2"
+  },
+  "devDependencies": {
+    "@types/jest": "29.5.14",
+    "@types/node": "22.15.18",
+    "@types/yargs": "^17.0.33",
+    "typescript": "^5.8.3"
+  },
+  "packageManager": "pnpm@8.15.5"
+}
