@@ -1,13 +1,13 @@
 {
   "name": "@abd3lraouf/aicommit",
-  "version": "1.0.0",
+  "version": "1.1.4",
   "description": "Amazon Q Git Commit Script - Generate AI-powered commit messages with emojis",
   "main": "dist/index.js",
   "bin": {
     "aicommit": "./dist/index.js"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=18.0.0"
   },
   "files": [
     "dist",
@@ -18,11 +18,13 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "tsc --watch",
-    "prepublishOnly": "npm run build",
+    "prepublishOnly": "pnpm run build",
     "clean": "rm -rf dist",
-    "prebuild": "npm run clean",
-    "postinstall": "npm run build",
-    "postbuild": "chmod +x dist/index.js"
+    "prebuild": "pnpm run clean",
+    "prepare": "pnpm run build",
+    "postbuild": "chmod +x dist/index.js",
+    "changelog": "node scripts/generate-changelog.js",
+    "changelog:write": "node scripts/generate-changelog.js --write"
   },
   "keywords": [
     "git",

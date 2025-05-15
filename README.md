@@ -73,6 +73,7 @@ npx aicommit
 - `--dry-run` (`-d`): Generate a commit message without actually committing changes
 - `--interactive` (`-i`): Enable interactive mode to edit the commit message before committing
 - `--verbose` (`-v`): Enable detailed output with styled messages and emojis (default: true)
+- `--debug`: Enable debug logging for troubleshooting message extraction issues
 - `--help` (`-h`): Show help information
 
 ### Examples
@@ -86,6 +87,9 @@ aicommit --dry-run
 
 # Disable verbose output (minimal output mode)
 aicommit --no-verbose
+
+# Enable debug mode for troubleshooting
+aicommit --debug
 ```
 
 ## Features
@@ -93,6 +97,7 @@ aicommit --no-verbose
 - Analyzes Git changes (staged, unstaged, and untracked files)
 - Generates conventional commit messages using Amazon Q's AI
 - Automatically adds appropriate emojis based on commit type
+- Wraps commit messages with `<commit-start>` and `<commit-end>` tags for precise extraction
 - Follows the Conventional Commits specification
 - Interactive mode for reviewing and editing messages
 - Intelligently handles staged/unstaged changes
@@ -162,9 +167,21 @@ This architecture makes it easy to:
 
 1. AICommit captures your current git status (staged, unstaged, and untracked files)
 2. It sends the changes to Amazon Q with a prompt for generating a best practice commit message
-3. The generated message is processed and enhanced with appropriate emojis
-4. In interactive mode, you can edit the message before committing
-5. The changes are committed with the generated/edited message
+3. The generated message is specifically enclosed in `<commit-start>` and `<commit-end>` tags for reliable extraction
+4. The extracted message is processed and enhanced with appropriate emojis
+5. In interactive mode, you can edit the message before committing
+6. The changes are committed with the generated/edited message
+
+### Commit Message Extraction
+
+AICommit uses a multi-layered approach to extract high-quality commit messages from Amazon Q's responses:
+
+1. **Tag-based extraction**: The primary method looks for content between `<commit-start>` and `<commit-end>` tags for precise extraction
+2. **Conventional commit pattern matching**: Identifies lines that match conventional commit format (e.g., "feat:", "fix:")
+3. **AI response cleaning**: Removes common AI commentary like "Here's a commit message..." and code block markers
+4. **Validation**: Ensures the extracted message follows conventional commit standards
+
+This robust approach ensures reliable, clean commit messages even with varying model outputs.
 
 ## File Permissions (Unix/Linux/macOS)
 
@@ -189,4 +206,4 @@ Abdelraouf Sabri
 - Email: hello@abd3lraouf.dev
 - Website: https://abd3lraouf.dev
 - Repository: https://github.com/abd3lraouf/aicommit
-- NPM Package: https://www.npmjs.com/package/@abd3lraouf/aicommit 
+- NPM Package: https://www.npmjs.com/package/@abd3lraouf/aicommit

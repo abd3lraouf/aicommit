@@ -29,6 +29,7 @@ export const styles = {
   warningText: (text: string) => `${chalk.yellow(figures.warning)} ${chalk.yellow(text)}`,
   errorText: (text: string) => `${chalk.red(figures.cross)} ${chalk.red(text)}`,
   processText: (text: string) => `${chalk.blue(figures.pointer)} ${chalk.cyan(text)}`,
+  debugText: (context: string, text: string) => `${chalk.gray(figures.info)} ${chalk.gray(`[${context}]`)} ${chalk.gray(text)}`,
   
   // Status indicators
   step: (current: number, total: number) => chalk.bold.blue(`[${current}/${total}]`),

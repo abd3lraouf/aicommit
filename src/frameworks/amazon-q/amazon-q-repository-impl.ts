@@ -4,6 +4,7 @@
 
 import * as child_process from 'child_process';
 import { AIRepository } from '../../core/repositories/ai-repository';
+import { debugLog, debugExtraction } from '../cli/debug';
 
 export class AmazonQRepositoryImpl implements AIRepository {
   /**
@@ -12,6 +13,8 @@ export class AmazonQRepositoryImpl implements AIRepository {
    * @returns Clean commit message
    */
   private extractCommitMessage(output: string): string {
+    debugLog('AmazonQ', 'Extracting commit message from raw output');
+    
     // Remove the MCP safety message
     output = output.replace(/To learn more about MCP safety.*?\n/s, '');
     
@@ -33,6 +36,9 @@ export class AmazonQRepositoryImpl implements AIRepository {
     // Remove the first line if it's empty
     output = output.replace(/^\s*\n/, '');
     
+    // Log original and cleaned message for debugging
+    debugExtraction(output, output.trim());
+    
     return output;
   }
 
@@ -42,6 +48,8 @@ export class AmazonQRepositoryImpl implements AIRepository {
    */
   async generateCommitMessage(prompt: string): Promise<string> {
     try {
+      debugLog('AmazonQ', 'Generating commit message with Amazon Q');
+      
       // Use spawn to send the prompt via stdin
       const process = child_process.spawnSync('q', ['chat', '--trust-all-tools', '--no-interactive'], {
         input: prompt,
@@ -50,19 +58,24 @@ export class AmazonQRepositoryImpl implements AIRepository {
       });
       
       if (process.status !== 0) {
+        debugLog('AmazonQ', 'Error from Amazon Q process', process.stderr);
         throw new Error(`Amazon Q error: ${process.stderr}`);
       }
+      
+      debugLog('AmazonQ', 'Received response from Amazon Q');
       
       // Clean the output to extract just the commit message
       const cleanMessage = this.extractCommitMessage(process.stdout);
       
       // If the message is still empty or just whitespace after cleaning, return an error
       if (!cleanMessage || cleanMessage.trim() === '') {
+        debugLog('AmazonQ', 'Amazon Q returned an empty message after processing');
         throw new Error("Amazon Q returned an empty or invalid commit message");
       }
       
       return cleanMessage;
     } catch (e) {
+      debugLog('AmazonQ', 'Exception while generating commit message', e);
       throw new Error(`Error calling Amazon Q: ${e}`);
     }
   }
