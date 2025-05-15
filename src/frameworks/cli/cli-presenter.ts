@@ -104,7 +104,7 @@ export class CliPresenter {
     const boxenOptions = {
       padding: 1,
       margin: 1,
-      borderStyle: 'round',
+      borderStyle: 'round' as const,
       borderColor: 'cyan',
       backgroundColor: '#222'
     };
@@ -136,7 +136,7 @@ export class CliPresenter {
     const boxenOptions = {
       padding: 1,
       margin: 1,
-      borderStyle: 'round',
+      borderStyle: 'round' as const,
       borderColor: 'cyan',
       backgroundColor: '#222'
     };
