@@ -5,6 +5,7 @@
 import { GitStatus, FileChanges, COMMIT_TYPE_EMOJIS } from '../entities/git';
 import { GitRepository } from '../repositories/git-repository';
 import { AIRepository } from '../repositories/ai-repository';
+import { debugLog } from '../../frameworks/cli/debug';
 
 export class GenerateCommitMessageUseCase {
   constructor(
@@ -246,30 +247,39 @@ Ensures consistent UI appearance across all device sizes by correcting flexbox l
    * Generate a commit message using AI based on current repository changes
    */
   async execute(): Promise<string> {
+    debugLog('UseCase', 'Starting commit message generation process');
+    
     // Check if we're in a git repository
     const isRepo = await this.gitRepository.isGitRepository();
     if (!isRepo) {
+      debugLog('UseCase', 'Not in a git repository');
       throw new Error('Not in a git repository');
     }
 
     // Get git status
+    debugLog('UseCase', 'Getting git status');
     const status = await this.gitRepository.getStatus();
     
     // Check if there are any changes to commit
     if (!status.staged.trim() && !status.unstaged.trim() && !status.untracked.trim()) {
+      debugLog('UseCase', 'No changes detected to commit');
       throw new Error('No changes detected to commit');
     }
     
     // Get detailed file changes
+    debugLog('UseCase', 'Getting detailed file changes');
     const fileChanges = await this.gitRepository.getFileChanges();
     
     // Create prompt for AI
+    debugLog('UseCase', 'Creating prompt for AI');
     const prompt = this.createPrompt(status, fileChanges);
     
     // Generate commit message using AI
+    debugLog('UseCase', 'Generating commit message using AI');
     const rawCommitMessage = await this.aiRepository.generateCommitMessage(prompt);
     
     // Enhance with emojis and formatting
+    debugLog('UseCase', 'Enhancing commit message with emojis and formatting');
     return this.enhanceCommitMessage(rawCommitMessage);
   }
 }
