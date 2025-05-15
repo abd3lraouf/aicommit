@@ -1,6 +1,6 @@
 {
   "name": "@abd3lraouf/aicommit",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Amazon Q Git Commit Script - Generate AI-powered commit messages with emojis",
   "main": "dist/index.js",
   "bin": {
