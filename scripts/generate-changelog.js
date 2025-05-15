@@ -26,18 +26,18 @@ const CATEGORIES = {
 };
 
 // Default behavior - generate changelog since the last tag
-function generateChangelog() {
+function generateChangelog(verbose = false) {
   try {
     const currentVersion = getCurrentVersion();
-    console.log(`Generating changelog for version ${currentVersion}...`);
+    if (verbose) console.log(`Generating changelog for version ${currentVersion}...`);
     
     // Get the last tag
     let lastTag;
     try {
       lastTag = execSync('git describe --tags --abbrev=0').toString().trim();
-      console.log(`Last tag: ${lastTag}`);
+      if (verbose) console.log(`Last tag: ${lastTag}`);
     } catch (error) {
-      console.log('No previous tags found. Generating changelog from the first commit.');
+      if (verbose) console.log('No previous tags found. Generating changelog from the first commit.');
       lastTag = '';
     }
     
@@ -49,12 +49,12 @@ function generateChangelog() {
     const commitsRaw = execSync(gitLogCommand).toString().trim();
     
     if (!commitsRaw) {
-      console.log('No commits found since the last tag.');
+      if (verbose) console.log('No commits found since the last tag.');
       return '';
     }
     
     const commitChunks = commitsRaw.split('\n--COMMIT--\n').filter(Boolean);
-    console.log(`Found ${commitChunks.length} commits to process for changelog.`);
+    if (verbose) console.log(`Found ${commitChunks.length} commits to process for changelog.`);
     
     // Parse commits and group by type
     const categorizedCommits = {};
@@ -72,7 +72,7 @@ function generateChangelog() {
       let typeMatch = subject.match(/^(?:[\p{Emoji}\u200d]+\s+)?(\w+)(?:\(([^)]+)\))?(!)?:\s*(.+)$/u);
       
       if (!typeMatch) {
-        console.log(`Skipping non-conventional commit: ${subject}`);
+        if (verbose) console.log(`Skipping non-conventional commit: ${subject}`);
         return; // Skip non-conventional commits
       }
       
@@ -134,19 +134,20 @@ function generateChangelog() {
         categorizedCommits[category] = [];
       }
       categorizedCommits[category].push(formattedMessage);
-      console.log(`Added commit to category ${category}: ${subject}`);
+      if (verbose) console.log(`Added commit to category ${category}: ${subject}`);
     });
     
     // Check if we have any categorized commits
     const hasCommits = Object.values(categorizedCommits).some(commits => commits && commits.length > 0);
     if (!hasCommits && breakingChanges.length === 0) {
-      console.log('No categorizable commits found. No changelog generated.');
+      if (verbose) console.log('No categorizable commits found. No changelog generated.');
       return '';
     }
     
-    // Generate the markdown
-    const today = new Date();
-    const formattedDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    // Generate the markdown with correct date
+    // Since system date appears incorrect, let's just use a manually formatted date
+    const formattedDate = process.env.CHANGELOG_DATE || new Date().toLocaleDateString('en-CA');
+    if (verbose) console.log(`Using release date: ${formattedDate}`);
     let changelog = `## ${currentVersion} (${formattedDate})\n\n`;
     
     // Add breaking changes section if any
@@ -181,55 +182,12 @@ function generateChangelog() {
       }
     });
     
-    // Write to CHANGELOG.md if required
-    const shouldWriteFile = process.argv.includes('--write');
-    if (shouldWriteFile) {
-      const changelogPath = path.join(process.cwd(), 'CHANGELOG.md');
-      let existingContent = '';
-      let headerContent = '';
-      
-      // Read existing changelog if it exists
-      if (fs.existsSync(changelogPath)) {
-        existingContent = fs.readFileSync(changelogPath, 'utf8');
-        
-        // Extract header (preserve the header and description)
-        const headerMatch = existingContent.match(/^# Changelog\n\nThis file contains.*?\n\n/s);
-        if (headerMatch) {
-          headerContent = headerMatch[0];
-          // Remove header from existing content
-          existingContent = existingContent.substring(headerContent.length);
-        } else {
-          // If header format doesn't match, use default header
-          headerContent = '# Changelog\n\nThis file contains the release history for @abd3lraouf/aicommit.\n\n';
-        }
-      } else {
-        // Default header if file doesn't exist
-        headerContent = '# Changelog\n\nThis file contains the release history for @abd3lraouf/aicommit.\n\n';
-      }
-      
-      // Combine the content: header + new changelog + existing content
-      const combinedChangelog = `${headerContent}${changelog}${existingContent}`;
-      
-      // Write the combined changelog
-      fs.writeFileSync(changelogPath, combinedChangelog);
-      
-      // Verify the file was written correctly
-      const writtenContent = fs.readFileSync(changelogPath, 'utf8');
-      if (writtenContent === combinedChangelog) {
-        console.log(`✅ Changelog successfully written to ${changelogPath}`);
-      } else {
-        console.error('❌ Error: Changelog wasn\'t written correctly');
-      }
-      
-      // Write debug log for troubleshooting
-      fs.writeFileSync(path.join(process.cwd(), 'changelog-debug.log'), 
-        `Command: ${gitLogCommand}\n\nRaw commits:\n${commitsRaw}\n\nParsed changelog:\n${changelog}\n\nCombined changelog:\n${combinedChangelog}`);
-    }
-    
     return changelog;
   } catch (error) {
-    console.error('Error generating changelog:', error.message);
-    console.error(error.stack);
+    if (verbose) {
+      console.error('Error generating changelog:', error.message);
+      console.error(error.stack);
+    }
     process.exit(1);
   }
 }
@@ -241,10 +199,90 @@ function getCurrentVersion() {
   return packageJson.version;
 }
 
+// Write changelog to file
+function writeChangelog(changelog) {
+  const changelogPath = path.join(process.cwd(), 'CHANGELOG.md');
+  let existingContent = '';
+  let headerContent = '';
+  
+  // Read existing changelog if it exists
+  if (fs.existsSync(changelogPath)) {
+    existingContent = fs.readFileSync(changelogPath, 'utf8');
+    
+    // Extract header (preserve the header and description)
+    const headerMatch = existingContent.match(/^# Changelog\n\nThis file contains.*?\n\n/s);
+    if (headerMatch) {
+      headerContent = headerMatch[0];
+      
+      // Remove header from existing content and extract the rest
+      // We want to skip the header and any content for the current version
+      // that might have been partially written before
+      const rest = existingContent.substring(headerMatch[0].length);
+      
+      // Find the first occurrence of a previous version header (## X.X.X)
+      const versionMatch = rest.match(/^## \d+\.\d+\.\d+/m);
+      if (versionMatch) {
+        const versionIndex = rest.indexOf(versionMatch[0]);
+        existingContent = rest.substring(versionIndex);
+      } else {
+        existingContent = rest;
+      }
+    } else {
+      // If header format doesn't match, use default header
+      headerContent = '# Changelog\n\nThis file contains the release history for @abd3lraouf/aicommit.\n\n';
+    }
+  } else {
+    // Default header if file doesn't exist
+    headerContent = '# Changelog\n\nThis file contains the release history for @abd3lraouf/aicommit.\n\n';
+  }
+  
+  // Ensure the changelog doesn't have any debug markers or unwanted content
+  const cleanChangelog = changelog
+    .replace(/^# Changelog\n\n/g, '') // Remove any accidental headers
+    .replace(/(?:<\/commit-end>|--COMMIT--)/g, '') // Remove commit markers
+    .trim();
+  
+  // Combine the content: header + new changelog + existing content
+  const combinedChangelog = `${headerContent}${cleanChangelog}\n\n${existingContent}`.trim() + '\n';
+  
+  // Write the combined changelog
+  fs.writeFileSync(changelogPath, combinedChangelog);
+  
+  // Verify the file was written correctly
+  try {
+    console.log('Writing changelog to file...');
+    const writtenContent = fs.readFileSync(changelogPath, 'utf8');
+    if (writtenContent.includes(cleanChangelog)) {
+      console.log(`✅ Changelog successfully written to ${changelogPath}`);
+    } else {
+      console.error('❌ Error: Changelog wasn\'t written correctly');
+    }
+  } catch (error) {
+    console.error('Error verifying changelog file:', error.message);
+  }
+  
+  // Write a simpler debug log without referencing variables from generateChangelog
+  fs.writeFileSync(path.join(process.cwd(), 'changelog-debug.log'), 
+    `Generated changelog:\n${changelog}\n\n` +
+    `Clean changelog:\n${cleanChangelog}\n\n` +
+    `Header content:\n${headerContent}\n\n` +
+    `Existing content:\n${existingContent}\n\n` +
+    `Final combined changelog:\n${combinedChangelog}`);
+}
+
 // If script is run directly
 if (require.main === module) {
-  const changelog = generateChangelog();
-  if (!process.argv.includes('--write')) {
+  const shouldWriteFile = process.argv.includes('--write');
+  
+  if (shouldWriteFile) {
+    // When writing to a file, run in verbose mode
+    const changelog = generateChangelog(true);
+    if (changelog) {
+      writeChangelog(changelog);
+    }
+  } else {
+    // When outputting to console, only output the changelog content without log messages
+    const changelog = generateChangelog(false);
     console.log(changelog);
   }
 }

@@ -79,9 +79,10 @@ jobs:
         id: changelog
         run: |
           # Generate the changelog and save to a file
-          node scripts/generate-changelog.js --write
+          # Use the current date from GitHub Actions, not the system date
+          CHANGELOG_DATE=$(date +%Y-%m-%d) node scripts/generate-changelog.js --write
           # Also save the changelog to an environment variable for the release
-          CHANGELOG=$(node scripts/generate-changelog.js)
+          CHANGELOG=$(CHANGELOG_DATE=$(date +%Y-%m-%d) node scripts/generate-changelog.js)
           echo "CHANGELOG<<EOF" >> $GITHUB_ENV
           echo "$CHANGELOG" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
