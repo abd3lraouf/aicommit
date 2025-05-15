@@ -8,6 +8,63 @@ import { debugLog, debugExtraction } from '../cli/debug';
 
 export class AmazonQRepositoryImpl implements AIRepository {
   /**
+   * Cleans up common formatting issues in extracted commit messages
+   * @param message Raw commit message to clean
+   * @returns Cleaned commit message
+   */
+  private cleanFormattingIssues(message: string): string {
+    if (!message) return message;
+    
+    // Remove any nested commit tags inside the message
+    let cleanedMessage = message.replace(/<commit-start>|<commit-end>/g, '');
+    
+    // Fix bullet point lists with empty lines between them
+    const lines = cleanedMessage.split('\n');
+    const resultLines = [];
+    let lastLineBullet = false;
+    let skipNextEmptyLine = false;
+    
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+      const isBullet = line.startsWith('-') || line.startsWith('*');
+      const isEmpty = line === '';
+      
+      // Skip empty lines between bullet points
+      if (isEmpty && lastLineBullet && i < lines.length - 1) {
+        const nextLine = lines[i + 1].trim();
+        const nextIsBullet = nextLine.startsWith('-') || nextLine.startsWith('*');
+        
+        if (nextIsBullet) {
+          skipNextEmptyLine = true;
+          continue; // Skip this empty line
+        }
+      }
+      
+      if (!isEmpty || !skipNextEmptyLine) {
+        resultLines.push(lines[i]); // Keep original indentation
+      }
+      
+      skipNextEmptyLine = false;
+      lastLineBullet = isBullet;
+    }
+    
+    cleanedMessage = resultLines.join('\n');
+    
+    // Fix other common formatting issues
+    
+    // Remove any potential duplicate newlines (3+ newlines becomes 2)
+    cleanedMessage = cleanedMessage.replace(/\n{3,}/g, '\n\n');
+    
+    // Remove the first line if it's empty
+    cleanedMessage = cleanedMessage.replace(/^\s*\n/, '');
+    
+    // Final trim
+    cleanedMessage = cleanedMessage.trim();
+    
+    return cleanedMessage;
+  }
+
+  /**
    * Extract the actual commit message from Amazon Q output by removing headers and UI elements
    * @param output Raw output from Amazon Q
    * @returns Clean commit message
@@ -19,9 +76,12 @@ export class AmazonQRepositoryImpl implements AIRepository {
       const taggedMessage = taggedContentMatch[1].trim();
       debugLog('Extract', 'Found tagged commit message');
       
+      // Clean up the message to fix common formatting issues and ensure correctness
+      const cleanedMessage = this.cleanFormattingIssues(taggedMessage);
+      
       // Validate that the extracted content looks like a commit message
-      if (this.validateCommitMessage(taggedMessage)) {
-        return taggedMessage;
+      if (this.validateCommitMessage(cleanedMessage)) {
+        return cleanedMessage;
       } else {
         debugLog('Extract', 'Tagged content does not appear to be a valid commit message, falling back');
       }
@@ -95,6 +155,12 @@ export class AmazonQRepositoryImpl implements AIRepository {
       return false;
     }
 
+    // Check if the message contains any commit tags inside it - this is invalid
+    if (message.includes('<commit-start>') || message.includes('<commit-end>')) {
+      debugLog('Validation', 'Message contains commit tags inside the content - invalid');
+      return false;
+    }
+
     // Check for any common prefixes that would indicate this isn't just a commit message
     const badPrefixes = [
       'here',
@@ -131,9 +197,41 @@ export class AmazonQRepositoryImpl implements AIRepository {
     
     if (!isConventionalFormat) {
       debugLog('Validation', `First line does not match conventional commit format: "${firstLine}"`);
+      return false;
     }
     
-    return isConventionalFormat;
+    // Check for improper spacing between bullet points
+    const lines = message.split('\n');
+    let inBulletList = false;
+    let emptyLineFoundBetweenBullets = false;
+    
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+      const isBulletPoint = line.startsWith('-') || line.startsWith('*');
+      
+      if (isBulletPoint) {
+        // If we're already in a bullet list and the previous line was empty,
+        // this indicates an empty line between bullet points - which is wrong
+        if (inBulletList && i > 0 && lines[i-1].trim() === '') {
+          debugLog('Validation', 'Found empty line between bullet points, which is not allowed');
+          emptyLineFoundBetweenBullets = true;
+          break;
+        }
+        inBulletList = true;
+      } else if (line === '') {
+        // It's an empty line, which is fine unless the next line is a bullet point
+        // (That will be checked in the next iteration)
+      } else {
+        // Not a bullet and not empty, so we're no longer in a bullet list
+        inBulletList = false;
+      }
+    }
+    
+    if (emptyLineFoundBetweenBullets) {
+      return false;
+    }
+    
+    return true;
   }
 
   /**
@@ -179,7 +277,7 @@ export class AmazonQRepositoryImpl implements AIRepository {
           const potentialMessage = codeBlockMatch[1].trim();
           debugLog('AmazonQ', 'Found code block, trying as commit message', potentialMessage);
           if (this.validateCommitMessage(potentialMessage)) {
-            cleanMessage = potentialMessage;
+            cleanMessage = this.cleanFormattingIssues(potentialMessage);
           }
         }
         
@@ -192,6 +290,9 @@ export class AmazonQRepositoryImpl implements AIRepository {
           if (matchResult && matchResult[0]) {
             cleanMessage = matchResult[0].trim();
             debugLog('AmazonQ', 'Found pattern match', cleanMessage);
+            
+            // Apply formatting fixes to the extracted message
+            cleanMessage = this.cleanFormattingIssues(cleanMessage);
           }
         }
       }
@@ -207,6 +308,9 @@ export class AmazonQRepositoryImpl implements AIRepository {
         debugLog('AmazonQ', 'Final message validation failed', cleanMessage);
         throw new Error("Amazon Q returned a commit message that does not follow conventional commit format");
       }
+      
+      // Apply final formatting fixes
+      cleanMessage = this.cleanFormattingIssues(cleanMessage);
       
       debugLog('AmazonQ', 'Successfully extracted commit message', cleanMessage);
       return cleanMessage;

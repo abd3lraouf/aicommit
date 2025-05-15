@@ -22,7 +22,9 @@
     "clean": "rm -rf dist",
     "prebuild": "pnpm run clean",
     "prepare": "pnpm run build",
-    "postbuild": "chmod +x dist/index.js"
+    "postbuild": "chmod +x dist/index.js",
+    "changelog": "node scripts/generate-changelog.js",
+    "changelog:write": "node scripts/generate-changelog.js --write"
   },
   "keywords": [
     "git",

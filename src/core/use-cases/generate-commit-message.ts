@@ -67,6 +67,8 @@ Follow the Conventional Commits specification (conventionalcommits.org) with the
    - List specific changes as bullet points with hyphens (-)
    - Be specific about what changed
    - Use imperative mood consistently
+   - NEVER add empty lines between bullet points
+   - Each bullet point should be on a consecutive line
 
 7. For breaking changes:
    - Add ! before the colon: feat!: or feat(scope)!:
@@ -101,6 +103,8 @@ Fixes #42
 6. The output will be used AS-IS in a git commit command
 7. ANY text you generate will be included in the git history
 8. ALWAYS wrap your commit message EXACTLY with <commit-start> and <commit-end> tags
+9. NEVER include <commit-start> or <commit-end> tags inside the commit message body
+10. NEVER include empty lines between bullet points in the list of changes
 
 Your output should look EXACTLY like this format:
 
