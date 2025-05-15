@@ -38,8 +38,6 @@ Follow the Conventional Commits specification (conventionalcommits.org) with the
    
    [detailed changes as bullet points]
 
-   [optional footer(s)]
-
 2. Type must be one of the following:
    - feat: A new feature
    - fix: A bug fix
@@ -49,8 +47,22 @@ Follow the Conventional Commits specification (conventionalcommits.org) with the
    - perf: A code change that improves performance
    - test: Adding missing or correcting existing tests
    - chore: Changes to the build process or auxiliary tools
+   - ci : Continuous integration changes
+   - build : Changes to the build process
+   - revert : Revert changes
+   - merge : Merge branches
+   - deps : Update dependencies
+   - breaking : Breaking changes
+   - security : Security fixes
+   - config : Configuration changes
+   - i18n : Internationalization changes
+   - release : Release changes
+   - db : Database changes
+   - a11y : Accessibility changes
+   - ux : User experience changes
+   - init :  Initial commit
 
-3. Add an optional scope in parentheses for additional context: feat(api):
+3. Add a scope in parentheses for additional context: feat(api):
 
 4. Description:
    - Use imperative, present tense (e.g., "add" not "added" or "adds")
@@ -61,7 +73,13 @@ Follow the Conventional Commits specification (conventionalcommits.org) with the
 5. High-level overview paragraph:
    - Add a paragraph after the first line providing a high-level context about the change
    - Focus on "why" this change matters and its overall impact
-   - Keep this short but informative (1-3 sentences)
+   - Keep this short but informative (1 sentences, 1 paragraph)
+   - Use imperative mood consistently
+   - Avoid jargon or overly technical terms
+   - Use clear and concise language
+   - Avoid using "we" or "I" - focus on the change itself
+   - Avoid using "this commit" or "this change" - focus on the change itself
+   - Avoid using "fixes" or "resolves" - focus on the change itself
 
 6. Detailed changes:
    - List specific changes as bullet points with hyphens (-)
@@ -74,12 +92,21 @@ Follow the Conventional Commits specification (conventionalcommits.org) with the
    - Add ! before the colon: feat!: or feat(scope)!:
    - Include "BREAKING CHANGE:" in the footer
 
-8. Footer (if needed):
-   - Reference issues: "Fixes #123" or "Refs #123"
-   - Include metadata like "Reviewed-by: name"
+8. CRITICAL INSTRUCTIONS
+   - ONLY output the commit message text itself - NOTHING ELSE
+   - DO NOT include any commentary, explanations, or notes about what you did
+   - DO NOT start with phrases like "Here's a commit message" or "This commit message..."
+   - DO NOT wrap the message in quotes, backticks, or any other markers EXCEPT for the required tags below
+   - DO NOT add any text before or after the commit message itself
+   - The output will be used AS-IS in a git commit command
+   - ANY text you generate will be included in the git history
+   - ALWAYS wrap your commit message EXACTLY with <commit-start> and <commit-end> tags
+   - NEVER include <commit-start> or <commit-end> tags inside the commit message body
+   - NEVER include empty lines between bullet points in the list of changes
 
 Example:
 \`\`\`
+<commit-start>
 feat(auth): add OAuth2 authentication
 
 This authentication implementation enhances security and follows modern industry standards, allowing users to sign in with popular providers without creating new credentials.
@@ -90,28 +117,17 @@ This authentication implementation enhances security and follows modern industry
 - Add auto refresh for expired tokens
 - Update user profile to display auth method
 
-Fixes #42
+<commit-end>
 \`\`\`
-
-## CRITICAL INSTRUCTIONS ##
-
-1. ONLY output the commit message text itself - NOTHING ELSE
-2. DO NOT include any commentary, explanations, or notes about what you did
-3. DO NOT start with phrases like "Here's a commit message" or "This commit message..."
-4. DO NOT wrap the message in quotes, backticks, or any other markers EXCEPT for the required tags below
-5. DO NOT add any text before or after the commit message itself
-6. The output will be used AS-IS in a git commit command
-7. ANY text you generate will be included in the git history
-8. ALWAYS wrap your commit message EXACTLY with <commit-start> and <commit-end> tags
-9. NEVER include <commit-start> or <commit-end> tags inside the commit message body
-10. NEVER include empty lines between bullet points in the list of changes
-
-Your output should look EXACTLY like this format:
 
 <commit-start>
 feat(scope): description
 
-Body of the commit message...
+Overview, big picture, and context about the change in a way that a human would understand it. just one paragraph.
+
+- List of changes
+- More changes (if any)
+- Even more changes (if any)
 <commit-end>
 
 Examples:
@@ -126,8 +142,6 @@ This authentication implementation enhances security and follows modern industry
 - Create secure token storage
 - Add auto refresh for expired tokens
 - Update user profile to display auth method
-
-Fixes #42
 <commit-end>
 
 <commit-start>
@@ -139,8 +153,6 @@ Ensures consistent UI appearance across all device sizes by correcting flexbox l
 - Add proper media queries
 - Fix flexbox alignment properties
 - Update responsive container styles
-
-Fixes #123
 <commit-end>`;
   }
 
