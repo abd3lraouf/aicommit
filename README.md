@@ -14,10 +14,26 @@ AICommit analyzes your Git changes to automatically generate high-quality conven
 
 ## Prerequisites
 
-- Node.js (v14 or higher)
+- Node.js (v18 or higher)
 - Git
 
 ## Installation
+
+Install globally using npm:
+
+```bash
+npm install -g @abd3lraouf/aicommit
+```
+
+Or using pnpm:
+
+```bash
+pnpm add -g @abd3lraouf/aicommit
+```
+
+## API Server Setup
+
+This tool requires a compatible AI API server to generate commit messages. See [API Server Setup](AI_SERVER_SETUP.md) for detailed instructions.
 
 ### Global Installation (Recommended)
 

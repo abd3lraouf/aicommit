@@ -4,7 +4,7 @@
   "description": "Git Commit Script - Generate smart commit messages with emojis",
   "main": "dist/index.js",
   "bin": {
-    "aicommit": "./aicommit-cli.js"
+    "aicommit": "dist/cli.js"
   },
   "engines": {
     "node": ">=18.0.0"
@@ -13,6 +13,8 @@
     "dist",
     "scripts",
     "aicommit-cli.js",
+    "src/schemas",
+    "src/simplified-cli.mjs",
     "README.md",
     "LICENSE",
     ".env.example",
@@ -20,22 +22,17 @@
     "AI_SERVER_SETUP.md"
   ],
   "scripts": {
-    "build": "tsc",
+    "clean": "rm -rf dist",
+    "prebuild": "pnpm run clean",
+    "build": "tsc && chmod +x aicommit-cli.js && chmod +x dist/cli.js dist/index.js && mkdir -p dist/schemas && cp src/schemas/*.json dist/schemas/",
+    "postbuild": "sed -i.bak '1d' dist/cli.js && echo '#!/usr/bin/env node' | cat - dist/cli.js > dist/cli.js.tmp && mv dist/cli.js.tmp dist/cli.js && sed -i.bak '1d' dist/index.js && echo '#!/usr/bin/env node' | cat - dist/index.js > dist/index.js.tmp && mv dist/index.js.tmp dist/index.js && rm dist/*.bak",
     "start": "node --es-module-specifier-resolution=node dist/index.js",
     "dev": "tsc --watch",
     "prepublishOnly": "pnpm run build",
-    "clean": "rm -rf dist",
-    "prebuild": "pnpm run clean",
-    "prepare": "pnpm run build",
-    "postbuild": "chmod +x dist/index.js dist/cli.js && echo '#!/usr/bin/env node' | cat - dist/cli.js > dist/cli.js.tmp && mv dist/cli.js.tmp dist/cli.js",
-    "changelog": "node scripts/utils/generate-changelog.mjs",
-    "changelog:write": "node scripts/utils/generate-changelog.mjs --write",
-    "setup": "cp -n .env.example .env || echo '.env file already exists'",
-    "setup:config": "node scripts/setup/setup-config.mjs",
-    "postinstall": "node scripts/setup/postinstall.mjs || echo 'Skipping postinstall script'",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest --config jest.config.mjs",
     "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --config jest.config.mjs --watch",
-    "test:api": "node scripts/utils/test-api.mjs"
+    "test:api": "node scripts/utils/test-api.mjs",
+    "postinstall": "node scripts/setup/postinstall.mjs || echo 'Skipping postinstall script'"
   },
   "keywords": [
     "git",
@@ -43,7 +40,11 @@
     "ai",
     "conventional-commits",
     "emoji",
-    "commit-message"
+    "commit-message",
+    "artificial-intelligence",
+    "git-tools",
+    "developer-tools",
+    "cli-tool"
   ],
   "author": "Abdelraouf Sabri <hello@abd3lraouf.dev> (https://abd3lraouf.dev)",
   "homepage": "https://github.com/abd3lraouf/aicommit#readme",
