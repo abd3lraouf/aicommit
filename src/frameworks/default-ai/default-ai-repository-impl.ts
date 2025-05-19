@@ -90,7 +90,8 @@ export class DefaultAIRepositoryImpl implements AIRepository {
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : String(error);
       debugLog('DefaultAI', 'Error generating commit message', errorMessage);
-      return 'chore: update project files';
+      // Instead of returning a fallback message, throw the error to halt execution
+      throw new Error(`API Error: Failed to generate commit message. ${errorMessage}`);
     }
   }
   
@@ -111,18 +112,66 @@ export class DefaultAIRepositoryImpl implements AIRepository {
   private async callCommitApi(prompt: string): Promise<CommitMessageResponse> {
     return new Promise((resolve, reject) => {
       // Load the schema content
-      const schemaPath = path.join(__dirname, '../../schemas/commit-message-schema.json');
+      let schemaPath: string;
       let schemaContent = '';
       
       try {
+        // First try using import.meta.url for ES modules
+        const moduleURL = new URL(import.meta.url);
+        const moduleDir = path.dirname(moduleURL.pathname);
+        schemaPath = path.join(moduleDir, '../../schemas/commit-message-schema.json');
+        
+        // Normalize the path on Windows (file:/// URLs need special handling)
+        if (process.platform === 'win32' && schemaPath.startsWith('/')) {
+          schemaPath = schemaPath.substring(1);
+        }
+        
+        // Fallback method if the above doesn't work
+        if (!fs.existsSync(schemaPath)) {
+          debugLog('DefaultAI', 'Schema not found at primary path, trying alternative paths...');
+          
+          // Try relative to current working directory
+          const cwdPath = path.join(process.cwd(), 'src/schemas/commit-message-schema.json');
+          if (fs.existsSync(cwdPath)) {
+            schemaPath = cwdPath;
+            debugLog('DefaultAI', 'Using schema from current working directory');
+          } else {
+            // Try one more path (dist folder)
+            const distPath = path.join(process.cwd(), 'dist/schemas/commit-message-schema.json');
+            if (fs.existsSync(distPath)) {
+              schemaPath = distPath;
+              debugLog('DefaultAI', 'Using schema from dist directory');
+            }
+          }
+        }
+        
         if (fs.existsSync(schemaPath)) {
           schemaContent = fs.readFileSync(schemaPath, 'utf8');
-          debugLog('DefaultAI', 'Loaded JSON schema from file');
+          debugLog('DefaultAI', 'Loaded JSON schema from file:', schemaPath);
         } else {
-          debugLog('DefaultAI', 'Schema file not found at:', schemaPath);
+          debugLog('DefaultAI', 'Schema file not found at any of the expected locations. Proceeding without schema.');
+          // Even without a schema, we can still set some reasonable expectations for the model
+          schemaContent = `{
+  "type": "object",
+  "properties": {
+    "emoji": { "type": "string" },
+    "type": { "type": "string" },
+    "scope": { "type": "string" },
+    "subject": { "type": "string" },
+    "body": {
+      "type": "object",
+      "properties": {
+        "summary": { "type": "string" },
+        "bulletPoints": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}`;
+          debugLog('DefaultAI', 'Using fallback schema definition');
         }
       } catch (error) {
         debugLog('DefaultAI', 'Error loading schema file:', error);
+        debugLog('DefaultAI', 'Proceeding without schema file.');
       }
       
       // Create the system prompt
@@ -201,7 +250,7 @@ Analyze the following git diff and provide the content for the commit message JS
           }
         ],
         temperature: 0.8,
-        max_tokens: 8000,
+        max_tokens: 5000,
         stream: false
       });
       
@@ -286,18 +335,18 @@ Analyze the following git diff and provide the content for the commit message JS
             resolve(jsonResponse);
           } catch (e: unknown) {
             const errorMessage = e instanceof Error ? e.message : String(e);
-            reject(new Error(`Failed to parse API response: ${errorMessage}`));
+            reject(new Error(`Failed to parse API response: ${errorMessage}. The API might have returned an invalid JSON format.`));
           }
         });
       });
       
       req.on('error', (e) => {
-        reject(new Error(`API request failed: ${e.message}`));
+        reject(new Error(`API request failed: ${e.message}. Please check your API configuration and ensure the server is running.`));
       });
       
       req.on('timeout', () => {
         req.destroy();
-        reject(new Error(`API request timed out after ${this.apiTimeout}ms`));
+        reject(new Error(`API request timed out after ${this.apiTimeout}ms. Please verify your API server is responsive or increase the timeout value.`));
       });
       
       req.write(postData);
@@ -314,11 +363,16 @@ Analyze the following git diff and provide the content for the commit message JS
       const content = response.choices[0]?.message?.content;
       
       if (!content) {
-        throw new Error('Invalid API response format');
+        throw new Error('Invalid API response format: No content found in the response. The API may not have generated any content.');
       }
       
       // Parse the JSON content
-      return JSON.parse(content) as CommitContent;
+      try {
+        return JSON.parse(content) as CommitContent;
+      } catch (parseError) {
+        // Provide more detailed error for JSON parsing issues
+        throw new Error(`Failed to parse JSON from API response. The API returned non-JSON content: ${content.substring(0, 100)}...`);
+      }
     } catch (error: unknown) {
       debugLog('DefaultAI', 'Error parsing response', error);
       const errorMessage = error instanceof Error ? error.message : String(error);
