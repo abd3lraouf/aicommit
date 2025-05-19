@@ -3,7 +3,7 @@
     "host": "192.168.1.2",
     "port": 1234,
     "endpoint": "/v1/chat/completions",
-    "model": "thudm",
+    "model": "git-commit-3b",
     "timeout": 3000000
   },
   "cli": {

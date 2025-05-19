@@ -119,31 +119,10 @@ export class DefaultAIRepositoryImpl implements AIRepository {
         // First try using import.meta.url for ES modules
         const moduleURL = new URL(import.meta.url);
         const moduleDir = path.dirname(moduleURL.pathname);
-        schemaPath = path.join(moduleDir, '../../schemas/commit-message-schema.json');
+        schemaPath = ''
         
-        // Normalize the path on Windows (file:/// URLs need special handling)
-        if (process.platform === 'win32' && schemaPath.startsWith('/')) {
-          schemaPath = schemaPath.substring(1);
-        }
         
         // Fallback method if the above doesn't work
-        if (!fs.existsSync(schemaPath)) {
-          debugLog('DefaultAI', 'Schema not found at primary path, trying alternative paths...');
-          
-          // Try relative to current working directory
-          const cwdPath = path.join(process.cwd(), 'src/schemas/commit-message-schema.json');
-          if (fs.existsSync(cwdPath)) {
-            schemaPath = cwdPath;
-            debugLog('DefaultAI', 'Using schema from current working directory');
-          } else {
-            // Try one more path (dist folder)
-            const distPath = path.join(process.cwd(), 'dist/schemas/commit-message-schema.json');
-            if (fs.existsSync(distPath)) {
-              schemaPath = distPath;
-              debugLog('DefaultAI', 'Using schema from dist directory');
-            }
-          }
-        }
         
         if (fs.existsSync(schemaPath)) {
           schemaContent = fs.readFileSync(schemaPath, 'utf8');

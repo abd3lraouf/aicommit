@@ -35,21 +35,6 @@ Changes in staged files:
 ${changes.staged_diff.substring(0, 10000)}
 
 Your output should be in JSON format according to this structure:
-{
-  "emoji": "✨", // Appropriate emoji for the commit type
-  "type": "feat", // Conventional commit type
-  "scope": "api", // Optional component scope 
-  "subject": "add oauth authentication", // Description in imperative mood
-  "body": {
-    "summary": "Enhances security and follows industry standards", // High-level overview
-    "bulletPoints": [ // Array of specific changes
-      "Add login screen with provider selection",
-      "Implement token management for Google auth",
-      "Create secure token storage"
-    ]
-  }
-}
-
 Follow the Conventional Commits specification (conventionalcommits.org) with the following structure:
 
 1. Format the message as: <type>[optional scope]: <description>
