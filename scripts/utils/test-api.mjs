@@ -159,7 +159,7 @@ Analyze the following git diff and provide the content for the commit message JS
       }
     ],
     temperature: 0.8,
-    max_tokens: 5000,
+    max_tokens: 20000,
     stream: false
   });
   
