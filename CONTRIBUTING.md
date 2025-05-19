@@ -54,7 +54,7 @@ src/
     repositories/   # Interface definitions for external services
     use-cases/      # Application business rules
   frameworks/
-    amazon-q/       # Amazon Q implementation
+    default-ai/     # Default AI implementation
     cli/            # Command-line interface
     git/            # Git operations implementation
   app.ts            # Application coordinator

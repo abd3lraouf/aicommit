@@ -24,7 +24,6 @@ If applicable, add screenshots or terminal output to help explain your problem.
  - OS: [e.g. macOS 12.6, Ubuntu 22.04]
  - Node.js version: [e.g. 16.14.2]
  - AICommit version: [e.g. 1.0.0]
- - Amazon Q CLI version: [e.g. 1.0.0]
 
 ## Additional context
 Add any other context about the problem here. 

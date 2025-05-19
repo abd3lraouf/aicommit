@@ -7,7 +7,7 @@ import { CommitChangesUseCase } from './core/use-cases/commit-changes';
 import { GitRepository } from './core/repositories/git-repository';
 import { AIRepository } from './core/repositories/ai-repository';
 import { GitRepositoryImpl } from './frameworks/git/git-repository-impl';
-import { AmazonQRepositoryImpl } from './frameworks/amazon-q/amazon-q-repository-impl';
+import { DefaultAIRepositoryImpl } from './frameworks/default-ai/default-ai-repository-impl';
 import { CliPresenter, CliOptions } from './frameworks/cli/cli-presenter';
 import { setDebugMode } from './frameworks/cli/debug';
 
@@ -21,7 +21,7 @@ export class App {
   constructor() {
     // Initialize repositories
     this.gitRepository = new GitRepositoryImpl();
-    this.aiRepository = new AmazonQRepositoryImpl();
+    this.aiRepository = new DefaultAIRepositoryImpl();
     
     // Initialize use cases
     this.generateCommitMessageUseCase = new GenerateCommitMessageUseCase(
@@ -49,7 +49,6 @@ export class App {
       if (cliOptions.debug) {
         setDebugMode(true);
         console.log('Debug mode enabled. Additional information will be displayed.');
-        console.log('Tag extraction feature enabled: Commit messages will be extracted using <commit-start> and <commit-end> tags');
       }
       
       // Show welcome message in verbose mode

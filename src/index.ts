@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * AICommit - Smart Git commit message generator using Amazon Q
+ * AICommit - Smart Git commit message generator
  */
 
 import { App } from './app';

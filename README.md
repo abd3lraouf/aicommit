@@ -1,6 +1,6 @@
 # AICommit
 
-A smart Git commit message generator that uses Amazon Q to create conventional commit messages with emojis.
+A smart Git commit message generator that creates conventional commit messages with emojis.
 
 ![npm version](https://img.shields.io/npm/v/@abd3lraouf/aicommit)
 ![license](https://img.shields.io/npm/l/@abd3lraouf/aicommit)
@@ -8,7 +8,7 @@ A smart Git commit message generator that uses Amazon Q to create conventional c
 
 ## Overview
 
-AICommit analyzes your Git changes and leverages Amazon Q to automatically generate high-quality conventional commit messages. It follows best practices, adds appropriate emojis based on commit type, and streamlines your Git workflow.
+AICommit analyzes your Git changes to automatically generate high-quality conventional commit messages. It follows best practices, adds appropriate emojis based on commit type, and streamlines your Git workflow.
 
 > **Note**: This package is published under the scoped name `@abd3lraouf/aicommit` on npm.
 
@@ -16,7 +16,6 @@ AICommit analyzes your Git changes and leverages Amazon Q to automatically gener
 
 - Node.js (v14 or higher)
 - Git
-- [Amazon Q CLI](https://aws.amazon.com/q/) installed and authenticated
 
 ## Installation
 
@@ -54,7 +53,6 @@ This should display the available command options. If you encounter any issues, 
 
 1. Node.js binaries are in your PATH
 2. Global npm/pnpm/yarn packages are properly linked
-3. Amazon Q CLI is installed and properly configured
 
 ## Usage
 
@@ -95,9 +93,8 @@ aicommit --debug
 ## Features
 
 - Analyzes Git changes (staged, unstaged, and untracked files)
-- Generates conventional commit messages using Amazon Q's AI
+- Generates conventional commit messages based on file changes
 - Automatically adds appropriate emojis based on commit type
-- Wraps commit messages with `<commit-start>` and `<commit-end>` tags for precise extraction
 - Follows the Conventional Commits specification
 - Interactive mode for reviewing and editing messages
 - Intelligently handles staged/unstaged changes
@@ -149,7 +146,7 @@ AICommit is built using clean architecture principles for better maintainability
 
 ### Frameworks Layer
 - **Git Implementation**: Implements GitRepository using Node.js child_process
-- **Amazon Q Implementation**: Implements AIRepository for Amazon Q
+- **Default AI Implementation**: Implements AIRepository with local text generation
 - **CLI Interface**: Handles command-line interactions and user prompts
 
 ### App Layer
@@ -158,7 +155,7 @@ AICommit is built using clean architecture principles for better maintainability
 - Manages application lifecycle
 
 This architecture makes it easy to:
-- Replace Amazon Q with another AI service if needed
+- Replace the AI implementation with another service if needed
 - Add new features without changing existing code
 - Test components in isolation
 - Maintain clear separation of concerns
@@ -166,22 +163,22 @@ This architecture makes it easy to:
 ## How It Works
 
 1. AICommit captures your current git status (staged, unstaged, and untracked files)
-2. It sends the changes to Amazon Q with a prompt for generating a best practice commit message
-3. The generated message is specifically enclosed in `<commit-start>` and `<commit-end>` tags for reliable extraction
-4. The extracted message is processed and enhanced with appropriate emojis
+2. It analyzes the changes to generate a best practice commit message
+3. The generated message is formatted following conventional commit standards
+4. The message is enhanced with appropriate emojis based on commit type
 5. In interactive mode, you can edit the message before committing
 6. The changes are committed with the generated/edited message
 
-### Commit Message Extraction
+### Commit Message Generation
 
-AICommit uses a multi-layered approach to extract high-quality commit messages from Amazon Q's responses:
+AICommit uses a multi-layered approach to generate high-quality commit messages:
 
-1. **Tag-based extraction**: The primary method looks for content between `<commit-start>` and `<commit-end>` tags for precise extraction
-2. **Conventional commit pattern matching**: Identifies lines that match conventional commit format (e.g., "feat:", "fix:")
-3. **AI response cleaning**: Removes common AI commentary like "Here's a commit message..." and code block markers
-4. **Validation**: Ensures the extracted message follows conventional commit standards
+1. **Change analysis**: Examines Git diffs to understand what was modified
+2. **Conventional commit formatting**: Creates structured messages following "type(scope): description" format
+3. **Emoji enhancement**: Adds appropriate emojis based on the commit type
+4. **Message validation**: Ensures the generated message follows conventional commit standards
 
-This robust approach ensures reliable, clean commit messages even with varying model outputs.
+This robust approach ensures reliable, clean commit messages that follow best practices.
 
 ## File Permissions (Unix/Linux/macOS)
 
@@ -191,6 +188,58 @@ If you're using a Unix-like system and installed globally, you might need to ens
 # If encountering permission issues
 chmod +x $(which aicommit)
 ```
+
+## API-Based Commit Message Generation
+
+AICommit now supports using a local JSON API server for commit message generation. This allows you to:
+
+1. Use your preferred LLM server instead of Amazon Q
+2. Get consistent, well-formatted commit messages in JSON format
+3. Customize the prompt and model parameters
+
+### Setting Up a Local API Server
+
+To use the API-based commit message generation, you need to set up a local API server that implements the OpenAI-compatible chat completions API endpoint. The server should:
+
+1. Listen on a configurable host and port (default: http://192.168.1.2:1234)
+2. Implement the `/v1/chat/completions` endpoint
+3. Accept POST requests with a JSON payload containing a model name and messages array
+4. Return a response in OpenAI API format with the commit message JSON in the content field
+
+#### Sample JSON Response Format
+
+The API should return JSON content that follows this structure:
+
+```json
+{
+  "emoji": "✨", 
+  "type": "feat",
+  "scope": "api",
+  "subject": "add oauth authentication",
+  "body": {
+    "summary": "Enhances security and follows industry standards",
+    "bulletPoints": [
+      "Add login screen with provider selection",
+      "Implement token management for Google auth",
+      "Create secure token storage"
+    ]
+  }
+}
+```
+
+### Testing the API Integration
+
+You can test the API integration using the provided test script:
+
+```bash
+node scripts/test-api.js
+```
+
+Make sure to update the API endpoint in `src/frameworks/default-ai/default-ai-repository-impl.ts` to match your local server configuration.
+
+### Customizing the API Endpoint
+
+By default, AICommit connects to a server at `http://192.168.1.2:1234`. You can modify this in the code or add configuration options to specify a different endpoint.
 
 ## Contributing
 
