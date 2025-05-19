@@ -35,6 +35,61 @@ pnpm add -g @abd3lraouf/aicommit
 
 This tool requires a compatible AI API server to generate commit messages. See [API Server Setup](AI_SERVER_SETUP.md) for detailed instructions.
 
+## Configuration
+
+There are three ways to configure AICommit:
+
+### 1. Interactive Configuration Setup
+
+Run the interactive configuration wizard:
+
+```bash
+# Using globally installed aicommit
+aicommit config
+
+# Or using the dedicated config tool
+aicommit-config
+```
+
+This wizard will guide you through setting up your configuration and save it either globally (in your home directory) or locally (in your project).
+
+### 2. Configuration File
+
+Create a `.aicommitrc.json` file in your home directory (`~/.aicommitrc.json`) or project root with your preferred settings:
+
+```json
+{
+  "api": {
+    "host": "localhost",
+    "port": 1234,
+    "endpoint": "/v1/chat/completions",
+    "model": "Qwen/Qwen3-4B",
+    "timeout": 30000
+  },
+  "cli": {
+    "dryRun": false,
+    "interactive": false,
+    "verbose": true,
+    "debug": false
+  }
+}
+```
+
+### 3. Command Line Options
+
+Override configuration settings using command-line arguments:
+
+```bash
+aicommit --api-host=localhost --api-port=1234 --interactive
+```
+
+Configuration is loaded in the following order of precedence (highest to lowest):
+1. Command line arguments
+2. Local project `.aicommitrc.json` 
+3. Home directory `.aicommitrc.json`
+4. Environment variables
+5. Default values
+
 ### Global Installation (Recommended)
 
 Install globally to use `aicommit` as a command from anywhere:
@@ -113,49 +168,6 @@ aicommit --no-verbose
 # Enable debug mode for troubleshooting
 aicommit --debug
 ```
-
-### Configuration
-
-AICommit supports multiple ways to configure the tool to match your preferences:
-
-#### Configuration Files
-
-You can create a configuration file in JSON format:
-
-- `.aicommitrc` or `.aicommitrc.json` in your project directory
-- `.aicommitrc` or `.aicommitrc.json` in your home directory
-
-Example `.aicommitrc.json`:
-
-```json
-{
-  "api": {
-    "host": "localhost",
-    "port": 1234,
-    "endpoint": "/v1/chat/completions",
-    "model": "local-model",
-    "timeout": 30000
-  },
-  "cli": {
-    "dryRun": false,
-    "interactive": true,
-    "verbose": true,
-    "debug": false
-  }
-}
-```
-
-#### Configuration Priority
-
-AICommit loads configuration in the following order (highest priority first):
-
-1. Command line arguments
-2. Project directory `.aicommitrc` file
-3. Home directory `.aicommitrc` file
-4. Environment variables (from `.env` file)
-5. Default values
-
-This allows you to set global defaults in your home directory while having project-specific overrides.
 
 ### Debug Mode
 
@@ -294,7 +306,7 @@ AICommit uses a local JSON API server for commit message generation. This allows
 
 ### Required AI Model
 
-We recommend using the **[THUDM/GLM-4-32B-Base-0414](https://huggingface.co/THUDM/GLM-4-32B-Base-0414)** model from Hugging Face, which has been tested with our system and works well with the required JSON output format.
+We recommend using the **[Qwen/Qwen3-4B](https://huggingface.co/Qwen/Qwen3-4B)** model from Hugging Face, which has been tested with our system and works well with the required JSON output format.
 
 For details about server setup and model requirements, see:
 - [AI_SERVER_SETUP.md](./AI_SERVER_SETUP.md) - Detailed server setup instructions and JSON schema
@@ -304,9 +316,9 @@ For details about server setup and model requirements, see:
 AICommit uses a `.env` file for configuration. The project now includes a pre-configured `.env` file with the following default settings:
 
 ```
-AI_API_HOST=192.168.1.2  # The host where your AI API server is running
-AI_API_PORT=1234         # The port your AI API server is listening on
-AI_API_MODEL=local-model # The model name to use
+AI_API_HOST=localhost  # The host where your AI API server is running
+AI_API_PORT=1234       # The port your AI API server is listening on
+AI_API_MODEL=Qwen/Qwen3-4B # The model name to use
 ```
 
 You can modify these settings by editing the `.env` file directly:
@@ -329,7 +341,7 @@ Then edit the `.env` file to match your AI server configuration:
 AI_API_HOST=localhost
 AI_API_PORT=1234
 AI_API_ENDPOINT=/v1/chat/completions
-AI_API_MODEL=THUDM/GLM-4-32B-Base-0414
+AI_API_MODEL=Qwen/Qwen3-4B
 AI_API_TIMEOUT=30000
 ```
 

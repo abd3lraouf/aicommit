@@ -9,7 +9,7 @@ export const apiConfigSchema = z.object({
   host: z.string().default('localhost'),
   port: z.number().int().positive().default(1234),
   endpoint: z.string().startsWith('/').default('/v1/chat/completions'),
-  model: z.string().default('local-model'),
+  model: z.string().default('Qwen/Qwen3-4B'),
   timeout: z.number().int().positive().default(30000), // 30 seconds
 });
 
@@ -38,7 +38,7 @@ export const defaultConfig: Config = {
     host: 'localhost',
     port: 1234,
     endpoint: '/v1/chat/completions',
-    model: 'local-model',
+    model: 'Qwen/Qwen3-4B',
     timeout: 30000,
   },
   cli: {

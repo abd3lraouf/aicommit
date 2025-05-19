@@ -41,7 +41,7 @@ const defaultConfig = {
     host: 'localhost',
     port: 1234,
     endpoint: '/v1/chat/completions',
-    model: 'local-model',
+    model: 'Qwen/Qwen3-4B',
     timeout: 30000
   },
   cli: {

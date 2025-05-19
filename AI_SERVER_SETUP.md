@@ -4,9 +4,9 @@ To use AICommit with the local API server, you need to set up a server that impl
 
 ## 🌟 Required Model
 
-**[THUDM/GLM-4-32B-Base-0414](https://huggingface.co/THUDM/GLM-4-32B-Base-0414)**
+**[Qwen/Qwen3-4B](https://huggingface.co/Qwen/Qwen3-4B)**
 
-This specific model has been tested and proven to work well with the structured JSON output requirements of AICommit. The default configuration expects this model to be available at `http://192.168.1.2:1234/v1/chat/completions`.
+This specific model has been tested and proven to work well with the structured JSON output requirements of AICommit. The default configuration expects this model to be available at `http://localhost:1234/v1/chat/completions`.
 
 You can modify the connection details in the `.env` file after installation.
 
@@ -133,7 +133,7 @@ Here's an example of setting up a server with LocalAI:
 git clone https://github.com/go-skynet/LocalAI
 cd LocalAI
 
-# Set up with the GLM-4 model
+# Set up with the Qwen3-4B model
 # (Follow model-specific instructions from LocalAI documentation)
 
 # Start the server
@@ -175,4 +175,4 @@ Responses from the AI model must follow these specific requirements:
 
 This structured format ensures consistent, high-quality commit messages that follow best practices.
 
-Please note that the quality of commit messages depends on the capabilities of the LLM model you choose. We recommend THUDM/GLM-4-32B-Base-0414 because it has demonstrated good performance with our specific requirements.
+Please note that the quality of commit messages depends on the capabilities of the LLM model you choose. We recommend Qwen/Qwen3-4B because it has demonstrated good performance with our specific requirements.

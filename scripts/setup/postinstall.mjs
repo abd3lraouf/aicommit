@@ -53,10 +53,10 @@ async function main() {
     const message = `
 ${chalk.bold('Thank you for installing AICommit!')}
 
-${chalk.yellow('Important:')} AICommit requires a local API server running with the ${chalk.green('THUDM/GLM-4-32B-Base-0414')} model.
+${chalk.yellow('Important:')} AICommit requires a local API server running with the ${chalk.green('Qwen/Qwen3-4B')} model.
 
 ${chalk.bold('Default Configuration:')}
-API Server: ${chalk.cyan('http://192.168.1.2:1234/v1/chat/completions')}
+API Server: ${chalk.cyan('http://localhost:1234/v1/chat/completions')}
 
 To customize your configuration:
 
@@ -87,10 +87,10 @@ ${chalk.blue('https://github.com/abd3lraouf/aicommit#readme')}
     console.log(`
 Thank you for installing AICommit!
 
-Important: AICommit requires a local API server running with the THUDM/GLM-4-32B-Base-0414 model.
+Important: AICommit requires a local API server running with the Qwen/Qwen3-4B model.
 
 Default Configuration:
-API Server: http://192.168.1.2:1234/v1/chat/completions
+API Server: http://localhost:1234/v1/chat/completions
 
 To customize your configuration:
 1. Create a .aicommitrc.json file in your project directory or home directory
