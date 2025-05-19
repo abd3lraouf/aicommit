@@ -29,8 +29,8 @@
     "changelog": "node scripts/generate-changelog.js",
     "changelog:write": "node scripts/generate-changelog.js --write",
     "setup": "cp -n .env.example .env || echo '.env file already exists'",
-    "setup:config": "node scripts/setup-config.js",
-    "postinstall": "node scripts/postinstall.js",
+    "setup:config": "node scripts/setup-config.mjs",
+    "postinstall": "node scripts/postinstall.mjs",
     "test": "jest",
     "test:watch": "jest --watch"
   },
