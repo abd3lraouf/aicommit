@@ -23,8 +23,24 @@ async function importModules() {
       boxen = (await import('boxen')).default;
       return true;
     } catch (error) {
-      console.error('Warning: Could not import chalk or boxen modules. Falling back to unformatted output.');
-      return false;
+      // Create simple fallback functions
+      chalk = {
+        bold: (text) => `\x1b[1m${text}\x1b[0m`,
+        green: (text) => `\x1b[32m${text}\x1b[0m`,
+        yellow: (text) => `\x1b[33m${text}\x1b[0m`,
+        blue: (text) => `\x1b[34m${text}\x1b[0m`,
+        red: (text) => `\x1b[31m${text}\x1b[0m`,
+        cyan: (text) => `\x1b[36m${text}\x1b[0m`,
+      };
+      
+      boxen = (text, options) => {
+        const width = text.split('\n').reduce((max, line) => Math.max(max, line.length), 0);
+        const border = '─'.repeat(width + 2);
+        return `┌${border}┐\n${text.split('\n').map(line => `│ ${line}${' '.repeat(width - line.length + 1)}│`).join('\n')}\n└${border}┘`;
+      };
+      
+      console.log('Using fallback formatting for display');
+      return true;
     }
   }
 }

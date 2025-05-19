@@ -25,7 +25,7 @@ const MODULE_NAME = 'aicommit';
  */
 export async function loadRcConfig(): Promise<Partial<Config>> {
   try {
-    // Create cosmiconfig explorer
+    // Create cosmiconfig explorer with proper search strategy
     const explorer = cosmiconfig(MODULE_NAME, {
       searchPlaces: [
         '.aicommitrc',
@@ -34,15 +34,26 @@ export async function loadRcConfig(): Promise<Partial<Config>> {
         '.aicommitrc.yml',
       ],
       cache: false,
+      stopDir: os.homedir(),  // This ensures it will go up to the home directory
     });
 
-    // Search for config file in current directory
+    // Search for config file starting from current directory
+    // This will check current dir and parent directories up to home dir
     let result = await explorer.search();
     
-    // If not found, try home directory
+    // If still not found, explicitly check home directory
     if (!result) {
       const homePath = os.homedir();
-      result = await explorer.search(homePath);
+      const homeExplorer = cosmiconfig(MODULE_NAME, {
+        searchPlaces: [
+          '.aicommitrc',
+          '.aicommitrc.json',
+          '.aicommitrc.yaml',
+          '.aicommitrc.yml',
+        ],
+        cache: false,
+      });
+      result = await homeExplorer.search(homePath);
     }
 
     if (result && result.config) {

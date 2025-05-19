@@ -35,6 +35,10 @@ export class CliPresenter {
    */
   parseArguments(args: string[] = process.argv.slice(2)): CliOptions {
     const parsedArgs = yargs(args)
+      .command('config', 'Run interactive configuration setup', () => {
+        this.runConfigSetup();
+        process.exit(0);
+      })
       .option('dry-run', {
         alias: 'd',
         type: 'boolean',
