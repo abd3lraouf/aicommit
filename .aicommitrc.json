@@ -1,0 +1,15 @@
+{
+  "api": {
+    "host": "192.168.1.2",
+    "port": 1234,
+    "endpoint": "/v1/chat/completions",
+    "model": "thudm",
+    "timeout": 3000000
+  },
+  "cli": {
+    "dryRun": false,
+    "interactive": false,
+    "verbose": true,
+    "debug": false
+  }
+}
