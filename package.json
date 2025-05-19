@@ -1,6 +1,6 @@
 {
   "name": "@abd3lraouf/aicommit",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "Git Commit Script - Generate smart commit messages with emojis",
   "main": "dist/index.js",
   "bin": {
