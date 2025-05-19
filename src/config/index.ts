@@ -2,8 +2,8 @@
  * Configuration module public API
  */
 
-import { ConfigLoader } from './config-loader';
-import { Config, ApiConfig, CliOptions } from './config-schema';
+import { ConfigLoader } from './config-loader.js';
+import { Config, ApiConfig, CliOptions } from './config-schema.js';
 
 export { Config, ApiConfig, CliOptions };
 

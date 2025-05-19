@@ -4,7 +4,7 @@
 
 import chalk from 'chalk';
 import figures from 'figures';
-import { styles } from './styles';
+import { styles } from './styles.js';
 
 // Debug mode state
 let isDebugMode = process.env.DEBUG === 'true';

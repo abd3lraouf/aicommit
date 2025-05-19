@@ -5,9 +5,14 @@
  * Uses conventional commits to categorize changes.
  */
 
-const { execSync } = require('child_process');
-const fs = require('fs');
-const path = require('path');
+import { execSync } from 'child_process';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// Get __dirname equivalent in ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Configuration
 const CATEGORIES = {
@@ -271,7 +276,7 @@ function writeChangelog(changelog) {
 }
 
 // If script is run directly
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   const shouldWriteFile = process.argv.includes('--write');
   
   if (shouldWriteFile) {
@@ -287,4 +292,4 @@ if (require.main === module) {
   }
 }
 
-module.exports = { generateChangelog };
+export { generateChangelog };

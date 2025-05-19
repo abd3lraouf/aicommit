@@ -5,10 +5,18 @@
  * This will simulate a git diff and call the API to generate a commit message
  */
 
-const http = require('http');
-const path = require('path');
-const fs = require('fs');
-require('dotenv').config();
+import http from 'http';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+import { config } from 'dotenv';
+
+// Load env vars
+config();
+
+// Get __dirname equivalent in ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Get API configuration from environment variables or fallback to defaults
 const API_HOST = process.env.AI_API_HOST || '192.168.1.2';
@@ -68,7 +76,7 @@ import { debugLog } from '../cli/debug';
 // Try to load the JSON schema
 let schemaContent = '';
 try {
-  const schemaPath = path.join(__dirname, '../src/schemas/commit-message-schema.json');
+  const schemaPath = path.join(process.cwd(), 'src/schemas/commit-message-schema.json');
   if (fs.existsSync(schemaPath)) {
     schemaContent = fs.readFileSync(schemaPath, 'utf8');
     console.log('Loaded JSON schema from file');

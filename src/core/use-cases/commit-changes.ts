@@ -2,7 +2,7 @@
  * Use case for committing changes with the generated message
  */
 
-import { GitRepository } from '../repositories/git-repository';
+import { GitRepository } from '../repositories/git-repository.js';
 
 export class CommitChangesUseCase {
   constructor(

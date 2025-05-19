@@ -3,10 +3,10 @@
  * AICommit - Smart Git commit message generator
  */
 
-import { App } from './app';
-import { debugLog } from './frameworks/cli/debug';
+import { App } from './app.js';
+import { debugLog } from './frameworks/cli/debug.js';
 
-async function main(): Promise<number> {
+export async function runCli(): Promise<number> {
   try {
     debugLog('Main', 'Starting AICommit');
     const app = new App();
@@ -18,7 +18,9 @@ async function main(): Promise<number> {
 }
 
 // Run the application and exit with the result code
-main().then(process.exit).catch(error => {
-  console.error(`Fatal error: ${error.message}`);
-  process.exit(1);
-}); 
+if (import.meta.url.endsWith(process.argv[1])) {
+  runCli().then(process.exit).catch(error => {
+    console.error(`Fatal error: ${error.message}`);
+    process.exit(1);
+  });
+} 

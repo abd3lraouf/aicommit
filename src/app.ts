@@ -2,15 +2,15 @@
  * Main application class
  */
 
-import { GenerateCommitMessageUseCase } from './core/use-cases/generate-commit-message';
-import { CommitChangesUseCase } from './core/use-cases/commit-changes';
-import { GitRepository } from './core/repositories/git-repository';
-import { AIRepository } from './core/repositories/ai-repository';
-import { GitRepositoryImpl } from './frameworks/git/git-repository-impl';
-import { DefaultAIRepositoryImpl } from './frameworks/default-ai/default-ai-repository-impl';
-import { CliPresenter, CliOptions } from './frameworks/cli/cli-presenter';
-import { setDebugMode } from './frameworks/cli/debug';
-import { initializeConfig, getCliOptions } from './config';
+import { GenerateCommitMessageUseCase } from './core/use-cases/generate-commit-message.js';
+import { CommitChangesUseCase } from './core/use-cases/commit-changes.js';
+import { GitRepository } from './core/repositories/git-repository.js';
+import { AIRepository } from './core/repositories/ai-repository.js';
+import { GitRepositoryImpl } from './frameworks/git/git-repository-impl.js';
+import { DefaultAIRepositoryImpl } from './frameworks/default-ai/default-ai-repository-impl.js';
+import { CliPresenter, CliOptions } from './frameworks/cli/cli-presenter.js';
+import { setDebugMode } from './frameworks/cli/debug.js';
+import { initializeConfig, getCliOptions } from './config/index.js';
 
 export class App {
   private gitRepository: GitRepository | null = null;

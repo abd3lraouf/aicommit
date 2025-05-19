@@ -11,8 +11,8 @@ import * as os from 'os';
 import { cosmiconfig } from 'cosmiconfig';
 import { z } from 'zod';
 import { config as dotenvConfig } from 'dotenv';
-import { Config, configSchema, ApiConfig, CliOptions, defaultConfig } from './config-schema';
-import { debugLog } from '../frameworks/cli/debug';
+import { Config, configSchema, ApiConfig, CliOptions, defaultConfig } from './config-schema.js';
+import { debugLog } from '../frameworks/cli/debug.js';
 
 // Module name for cosmiconfig
 const MODULE_NAME = 'aicommit';

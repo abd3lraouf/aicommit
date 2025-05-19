@@ -8,9 +8,9 @@ import * as os from 'os';
 import * as child_process from 'child_process';
 import chalk from 'chalk';
 import figures from 'figures';
-import { GitRepository } from '../../core/repositories/git-repository';
-import { GitStatus, FileChanges } from '../../core/entities/git';
-import { styles } from '../cli/styles';
+import { GitRepository } from '../../core/repositories/git-repository.js';
+import { GitStatus, FileChanges } from '../../core/entities/git.js';
+import { styles } from '../cli/styles.js';
 
 export class GitRepositoryImpl implements GitRepository {
   /**

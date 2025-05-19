@@ -1,0 +1,43 @@
+
+> @abd3lraouf/aicommit@2.0.1 prepublishOnly /Users/abdelraouf/Developer/aicommit
+> pnpm run build
+
+
+> @abd3lraouf/aicommit@2.0.1 build /Users/abdelraouf/Developer/aicommit
+> tsc
+
+src/app.ts(44,31): error TS2339: Property 'dryRun' does not exist on type 'CliOptions'.
+src/app.ts(45,35): error TS2339: Property 'interactive' does not exist on type 'CliOptions'.
+src/app.ts(46,31): error TS2339: Property 'verbose' does not exist on type 'CliOptions'.
+src/app.ts(47,29): error TS2339: Property 'debug' does not exist on type 'CliOptions'.
+src/app.ts(79,22): error TS2339: Property 'verbose' does not exist on type 'CliOptions'.
+src/app.ts(91,22): error TS2339: Property 'verbose' does not exist on type 'CliOptions'.
+src/app.ts(97,22): error TS2339: Property 'interactive' does not exist on type 'CliOptions'.
+src/app.ts(98,24): error TS2339: Property 'verbose' does not exist on type 'CliOptions'.
+src/app.ts(103,24): error TS2339: Property 'verbose' does not exist on type 'CliOptions'.
+src/app.ts(110,22): error TS2339: Property 'dryRun' does not exist on type 'CliOptions'.
+src/app.ts(116,22): error TS2339: Property 'verbose' does not exist on type 'CliOptions'.
+src/config/config-loader.ts(7,53): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './config-schema.js'?
+src/config/config-loader.ts(8,62): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './config-sources.js'?
+src/config/config-loader.ts(9,26): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean '../frameworks/cli/debug.js'?
+src/config/config-sources.ts(14,76): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './config-schema.js'?
+src/config/config-sources.ts(15,26): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean '../frameworks/cli/debug.js'?
+src/config/index.ts(5,30): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './config-loader.js'?
+src/config/index.ts(6,47): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './config-schema.js'?
+src/core/repositories/git-repository.ts(5,40): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean '../entities/git.js'?
+src/core/use-cases/commit-changes.ts(5,31): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean '../repositories/git-repository.js'?
+src/core/use-cases/generate-commit-message.ts(5,40): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean '../entities/git.js'?
+src/core/use-cases/generate-commit-message.ts(6,31): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean '../repositories/git-repository.js'?
+src/core/use-cases/generate-commit-message.ts(7,30): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean '../repositories/ai-repository.js'?
+src/core/use-cases/generate-commit-message.ts(8,26): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean '../../frameworks/cli/debug.js'?
+src/frameworks/cli/cli-presenter.ts(86,7): error TS2353: Object literal may only specify known properties, and 'dryRun' does not exist in type 'CliOptions'.
+src/frameworks/cli/debug.ts(7,24): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './styles.js'?
+src/frameworks/default-ai/default-ai-repository-impl.ts(9,30): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean '../../core/repositories/ai-repository.js'?
+src/frameworks/default-ai/default-ai-repository-impl.ts(10,26): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean '../cli/debug.js'?
+src/frameworks/default-ai/default-ai-repository-impl.ts(11,24): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean '../cli/styles.js'?
+src/frameworks/default-ai/default-ai-repository-impl.ts(12,30): error TS2834: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Consider adding an extension to the import path.
+src/frameworks/git/git-repository-impl.ts(11,31): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean '../../core/repositories/git-repository.js'?
+src/frameworks/git/git-repository-impl.ts(12,40): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean '../../core/entities/git.js'?
+src/frameworks/git/git-repository-impl.ts(13,24): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean '../cli/styles.js'?
+ ELIFECYCLE  Command failed with exit code 2.
+ ELIFECYCLE  Command failed with exit code 1.

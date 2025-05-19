@@ -2,10 +2,10 @@
  * Use case for generating commit messages with AI
  */
 
-import { GitStatus, FileChanges } from '../entities/git';
-import { GitRepository } from '../repositories/git-repository';
-import { AIRepository } from '../repositories/ai-repository';
-import { debugLog } from '../../frameworks/cli/debug';
+import { GitStatus, FileChanges } from '../entities/git.js';
+import { GitRepository } from '../repositories/git-repository.js';
+import { AIRepository } from '../repositories/ai-repository.js';
+import { debugLog } from '../../frameworks/cli/debug.js';
 
 export class GenerateCommitMessageUseCase {
   constructor(

@@ -6,10 +6,10 @@
 import * as http from 'http';
 import * as path from 'path';
 import * as fs from 'fs';
-import { AIRepository } from '../../core/repositories/ai-repository';
-import { debugLog } from '../cli/debug';
-import { styles } from '../cli/styles';
-import { getApiConfig } from '../../config';
+import { AIRepository } from '../../core/repositories/ai-repository.js';
+import { debugLog } from '../cli/debug.js';
+import { styles } from '../cli/styles.js';
+import { getApiConfig } from '../../config/index.js';
 
 // Interface for commit message in JSON format
 interface CommitMessageResponse {

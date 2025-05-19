@@ -73,16 +73,16 @@ jobs:
         run: pnpm install
 
       - name: Make changelog script executable
-        run: chmod +x scripts/generate-changelog.js
+        run: chmod +x scripts/utils/generate-changelog.mjs
 
       - name: Generate changelog
         id: changelog
         run: |
           # Generate the changelog and save to a file
           # Use the current date from GitHub Actions, not the system date
-          CHANGELOG_DATE=$(date +%Y-%m-%d) node scripts/generate-changelog.js --write
+          CHANGELOG_DATE=$(date +%Y-%m-%d) node scripts/utils/generate-changelog.mjs --write
           # Also save the changelog to an environment variable for the release
-          CHANGELOG=$(CHANGELOG_DATE=$(date +%Y-%m-%d) node scripts/generate-changelog.js)
+          CHANGELOG=$(CHANGELOG_DATE=$(date +%Y-%m-%d) node scripts/utils/generate-changelog.mjs)
           echo "CHANGELOG<<EOF" >> $GITHUB_ENV
           echo "$CHANGELOG" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV

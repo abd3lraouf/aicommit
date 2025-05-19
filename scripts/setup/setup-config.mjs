@@ -2,14 +2,36 @@
 
 /**
  * Setup script to create an initial .aicommitrc file
+ * This consolidated version works in both ESM and CommonJS environments
  */
 
 import fs from 'fs';
 import path from 'path';
 import readline from 'readline';
-import chalk from 'chalk';
 import { fileURLToPath } from 'url';
+import os from 'os';
 
+// Try to import chalk, but have a fallback if it fails
+let chalk;
+try {
+  chalk = (await import('chalk')).default;
+} catch (error) {
+  // Create a simple chalk-like object with basic formatting functions
+  chalk = {
+    bold: (text) => `\x1b[1m${text}\x1b[0m`,
+    green: (text) => `\x1b[32m${text}\x1b[0m`,
+    yellow: (text) => `\x1b[33m${text}\x1b[0m`,
+    blue: (text) => `\x1b[34m${text}\x1b[0m`,
+    red: (text) => `\x1b[31m${text}\x1b[0m`,
+    cyan: (text) => `\x1b[36m${text}\x1b[0m`,
+    bold: {
+      green: (text) => `\x1b[1m\x1b[32m${text}\x1b[0m`,
+      yellow: (text) => `\x1b[1m\x1b[33m${text}\x1b[0m`,
+    }
+  };
+}
+
+// Get __dirname equivalent in ESM
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -89,14 +111,27 @@ async function configureSettings() {
   
   // Determine save path
   const savePath = useGlobal
-    ? path.join(process.env.HOME || process.env.USERPROFILE, '.aicommitrc.json')
+    ? path.join(os.homedir(), '.aicommitrc.json')
     : path.join(process.cwd(), '.aicommitrc.json');
   
-  // Write configuration
-  fs.writeFileSync(savePath, JSON.stringify(config, null, 2));
+  // Check if file already exists
+  if (fs.existsSync(savePath)) {
+    const overwrite = await confirm(`${savePath} already exists. Overwrite?`, false);
+    if (!overwrite) {
+      console.log(chalk.yellow('\nSetup canceled. Existing file was not modified.'));
+      rl.close();
+      return;
+    }
+  }
   
-  console.log(chalk.green(`\nConfiguration saved to ${savePath}`));
-  console.log(chalk.yellow('You can edit this file at any time or override settings via command-line arguments.\n'));
+  // Write configuration
+  try {
+    fs.writeFileSync(savePath, JSON.stringify(config, null, 2));
+    console.log(chalk.green(`\nConfiguration saved to ${savePath}`));
+    console.log(chalk.yellow('You can edit this file at any time or override settings via command-line arguments.\n'));
+  } catch (error) {
+    console.error(chalk.red(`Error saving configuration: ${error.message}`));
+  }
   
   rl.close();
 }

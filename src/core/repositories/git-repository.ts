@@ -2,7 +2,7 @@
  * Interface for Git repository operations
  */
 
-import { GitStatus, FileChanges } from '../entities/git';
+import { GitStatus, FileChanges } from '../entities/git.js';
 
 export interface GitRepository {
   /**

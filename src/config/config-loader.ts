@@ -4,9 +4,9 @@
  */
 
 import deepmerge from 'deepmerge';
-import { Config, defaultConfig, configSchema } from './config-schema';
-import { loadRcConfig, loadEnvConfig, cliArgsToConfig } from './config-sources';
-import { debugLog } from '../frameworks/cli/debug';
+import { Config, defaultConfig, configSchema } from './config-schema.js';
+import { loadRcConfig, loadEnvConfig, cliArgsToConfig } from './config-sources.js';
+import { debugLog } from '../frameworks/cli/debug.js';
 
 /**
  * Configuration loader class

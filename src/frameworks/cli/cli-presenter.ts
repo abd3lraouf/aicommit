@@ -9,8 +9,8 @@ import * as child_process from 'child_process';
 import yargs from 'yargs';
 import chalk from 'chalk';
 import boxen from 'boxen';
-import { styles } from './styles';
-import { CliOptions as ConfigCliOptions } from '../../config';
+import { styles } from './styles.js';
+import { CliOptions as ConfigCliOptions } from '../../config/index.js';
 
 export interface CliOptions extends ConfigCliOptions {
   // Extended CLI options with API configuration
@@ -19,6 +19,12 @@ export interface CliOptions extends ConfigCliOptions {
   apiEndpoint?: string;
   apiModel?: string;
   apiTimeout?: number;
+  
+  // Core CLI options
+  dryRun: boolean;
+  interactive: boolean;
+  verbose: boolean;
+  debug: boolean;
 }
 
 export class CliPresenter {
