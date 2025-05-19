@@ -85,7 +85,16 @@ export class App {
       if (!this.generateCommitMessageUseCase) {
         throw new Error('Generate commit message use case not initialized');
       }
-      let commitMessage = await this.generateCommitMessageUseCase.execute();
+      
+      let commitMessage;
+      try {
+        commitMessage = await this.generateCommitMessageUseCase.execute();
+      } catch (apiError: unknown) {
+        const errorMessage = apiError instanceof Error ? apiError.message : String(apiError);
+        this.cliPresenter.showError(`AI API Error: ${errorMessage}`);
+        this.cliPresenter.showError('No commit was made. Please check your API configuration and try again.');
+        return 1;
+      }
       
       // Show status in verbose mode
       if (cliOptions.verbose) {
@@ -131,7 +140,15 @@ export class App {
       }
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : String(error);
-      this.cliPresenter.showError(`Error: ${errorMessage}`);
+      
+      // Check if it's an API-related error
+      if (errorMessage.includes('API Error') || errorMessage.includes('API request')) {
+        this.cliPresenter.showError(`AI Service Error: ${errorMessage}`);
+        this.cliPresenter.showError('No commit was made. Please check your API configuration and ensure the AI service is running.');
+      } else {
+        this.cliPresenter.showError(`Error: ${errorMessage}`);
+      }
+      
       return 1;
     }
   }
