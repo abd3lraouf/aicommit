@@ -18,6 +18,7 @@ export const styles = {
   debugHighlight: chalk.hex('#b58900'), // Amber color for important debug info
   debugHeading: chalk.hex('#6c71c4'), // Muted purple for headings
   debugBorder: chalk.hex('#586e75'), // Muted teal for borders
+  debugApi: chalk.hex('#26A69A'), // Teal color for API-related debug info
 
   // Symbols
   infoSymbol: figures.info,

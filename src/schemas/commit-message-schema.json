@@ -1,0 +1,86 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ConventionalCommitMessageNoFooterRequiredExpandedTypes",
+  "description": "Schema for a conventional Git commit message with emoji, all fields required except footer. Bullet points should appear with a dash in the final text.",
+  "type": "object",
+  "properties": {
+    "emoji": {
+      "description": "An emoji representing the type of change (e.g., ✨ for feat, 🐛 for fix).",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 10
+    },
+    "type": {
+      "description": "The type of change based on conventional commits.",
+      "type": "string",
+      "enum": [
+        "feat",
+        "fix",
+        "docs",
+        "style",
+        "refactor",
+        "perf",
+        "test",
+        "chore",
+        "ci",
+        "build",
+        "revert",
+        "merge",
+        "deps",
+        "breaking",
+        "security",
+        "config",
+        "i18n",
+        "release",
+        "db",
+        "a11y",
+        "ux",
+        "init"
+      ],
+      "minLength": 1
+    },
+    "scope": {
+      "description": "The component or scope affected (e.g., parser, api, auth).",
+      "type": "string",
+      "minLength": 1
+    },
+    "subject": {
+      "description": "A brief, imperative, present tense summary of the change (max 50 chars recommended but not enforced by schema).",
+      "type": "string",
+      "minLength": 5
+    },
+    "body": {
+      "description": "The commit message body, providing more detail.",
+      "type": "object",
+      "properties": {
+        "summary": {
+          "description": "An extended summary in the body.",
+          "type": "string",
+          "minLength": 1
+        },
+        "bulletPoints": {
+          "description": "Bullet points detailing changes. Each string item corresponds to a line that should be prefixed with a dash in the final text output.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "summary",
+        "bulletPoints"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "emoji",
+    "type",
+    "scope",
+    "subject",
+    "body"
+  ],
+  "additionalProperties": false
+}

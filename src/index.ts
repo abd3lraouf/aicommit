@@ -4,10 +4,17 @@
  */
 
 import { App } from './app';
+import { debugLog } from './frameworks/cli/debug';
 
 async function main(): Promise<number> {
-  const app = new App();
-  return await app.run();
+  try {
+    debugLog('Main', 'Starting AICommit');
+    const app = new App();
+    return await app.run();
+  } catch (error) {
+    console.error(`Fatal error: ${error instanceof Error ? error.message : String(error)}`);
+    return 1;
+  }
 }
 
 // Run the application and exit with the result code

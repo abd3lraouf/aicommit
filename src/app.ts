@@ -10,29 +10,18 @@ import { GitRepositoryImpl } from './frameworks/git/git-repository-impl';
 import { DefaultAIRepositoryImpl } from './frameworks/default-ai/default-ai-repository-impl';
 import { CliPresenter, CliOptions } from './frameworks/cli/cli-presenter';
 import { setDebugMode } from './frameworks/cli/debug';
+import { initializeConfig, getCliOptions } from './config';
 
 export class App {
-  private gitRepository: GitRepository;
-  private aiRepository: AIRepository;
-  private generateCommitMessageUseCase: GenerateCommitMessageUseCase;
-  private commitChangesUseCase: CommitChangesUseCase;
+  private gitRepository: GitRepository | null = null;
+  private aiRepository: AIRepository | null = null;
+  private generateCommitMessageUseCase: GenerateCommitMessageUseCase | null = null;
+  private commitChangesUseCase: CommitChangesUseCase | null = null;
   private cliPresenter: CliPresenter;
 
   constructor() {
-    // Initialize repositories
-    this.gitRepository = new GitRepositoryImpl();
-    this.aiRepository = new DefaultAIRepositoryImpl();
-    
-    // Initialize use cases
-    this.generateCommitMessageUseCase = new GenerateCommitMessageUseCase(
-      this.gitRepository,
-      this.aiRepository
-    );
-    this.commitChangesUseCase = new CommitChangesUseCase(
-      this.gitRepository
-    );
-    
-    // Initialize presenter
+    // Only initialize the presenter in the constructor
+    // Repositories and use cases will be initialized after config is loaded
     this.cliPresenter = new CliPresenter();
   }
 
@@ -45,11 +34,46 @@ export class App {
       // If no options provided, parse from command line
       const cliOptions = options || this.cliPresenter.parseArguments();
       
+      // Initialize configuration with CLI options
+      await initializeConfig({
+        'api-host': cliOptions.apiHost,
+        'api-port': cliOptions.apiPort,
+        'api-endpoint': cliOptions.apiEndpoint,
+        'api-model': cliOptions.apiModel,
+        'api-timeout': cliOptions.apiTimeout,
+        'dry-run': cliOptions.dryRun,
+        'interactive': cliOptions.interactive,
+        'verbose': cliOptions.verbose,
+        'debug': cliOptions.debug,
+      });
+      
+      // Get config CLI options (may be modified by .aicommitrc files)
+      const configCliOptions = getCliOptions();
+      
+      // Merge CLI options with loaded config (CLI options take precedence)
+      const mergedOptions = {
+        ...configCliOptions,
+        ...cliOptions
+      };
+      
       // Set debug mode if enabled
-      if (cliOptions.debug) {
+      if (mergedOptions.debug) {
         setDebugMode(true);
         console.log('Debug mode enabled. Additional information will be displayed.');
       }
+      
+      // Initialize repositories now that config is loaded
+      this.gitRepository = new GitRepositoryImpl();
+      this.aiRepository = new DefaultAIRepositoryImpl();
+      
+      // Initialize use cases
+      this.generateCommitMessageUseCase = new GenerateCommitMessageUseCase(
+        this.gitRepository,
+        this.aiRepository
+      );
+      this.commitChangesUseCase = new CommitChangesUseCase(
+        this.gitRepository
+      );
       
       // Show welcome message in verbose mode
       if (cliOptions.verbose) {
@@ -58,6 +82,9 @@ export class App {
       }
       
       // Generate commit message
+      if (!this.generateCommitMessageUseCase) {
+        throw new Error('Generate commit message use case not initialized');
+      }
       let commitMessage = await this.generateCommitMessageUseCase.execute();
       
       // Show status in verbose mode
@@ -90,6 +117,9 @@ export class App {
         this.cliPresenter.showStep(3, 3, 'Committing changes');
       }
       
+      if (!this.commitChangesUseCase) {
+        throw new Error('Commit changes use case not initialized');
+      }
       const success = await this.commitChangesUseCase.execute(commitMessage, true);
       
       if (success) {

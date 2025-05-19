@@ -4,8 +4,12 @@
  */
 
 import * as http from 'http';
+import * as path from 'path';
+import * as fs from 'fs';
 import { AIRepository } from '../../core/repositories/ai-repository';
 import { debugLog } from '../cli/debug';
+import { styles } from '../cli/styles';
+import { getApiConfig } from '../../config';
 
 // Interface for commit message in JSON format
 interface CommitMessageResponse {
@@ -44,7 +48,24 @@ interface CommitContent {
 }
 
 export class DefaultAIRepositoryImpl implements AIRepository {
-  private apiUrl = 'http://192.168.1.2:1234';
+  private apiHost: string;
+  private apiPort: number;
+  private apiEndpoint: string;
+  private apiModel: string;
+  private apiTimeout: number;
+  
+  constructor() {
+    // Load configuration from the config system
+    const apiConfig = getApiConfig();
+    
+    this.apiHost = apiConfig.host;
+    this.apiPort = apiConfig.port;
+    this.apiEndpoint = apiConfig.endpoint;
+    this.apiModel = apiConfig.model;
+    this.apiTimeout = apiConfig.timeout;
+    
+    debugLog('DefaultAI', `API configured: http://${this.apiHost}:${this.apiPort}${this.apiEndpoint}`);
+  }
   
   /**
    * Generate a commit message by calling the API
@@ -74,16 +95,38 @@ export class DefaultAIRepositoryImpl implements AIRepository {
   }
   
   /**
+   * Estimate the token count of a string
+   * This is a very rough estimate based on 4 characters ~= 1 token
+   * @param text The text to estimate token count for
+   * @returns Estimated token count
+   */
+  private estimateTokenCount(text: string): number {
+    // A very simple estimation: ~4 characters per token on average
+    return Math.ceil(text.length / 4);
+  }
+  
+  /**
    * Call the API to generate a commit message
    */
   private async callCommitApi(prompt: string): Promise<CommitMessageResponse> {
     return new Promise((resolve, reject) => {
-      const postData = JSON.stringify({
-        model: "local-model",
-        messages: [
-          {
-            role: "system",
-            content: `You are an AI designed to analyze git diffs and generate content for a conventional commit message JSON object. Your output MUST be a JSON object conforming to the schema enforced by the server. Based on the provided git diff, analyze the changes and provide the content for the JSON fields according to these rules, following the Conventional Commits specification (conventionalcommits.org):
+      // Load the schema content
+      const schemaPath = path.join(__dirname, '../../schemas/commit-message-schema.json');
+      let schemaContent = '';
+      
+      try {
+        if (fs.existsSync(schemaPath)) {
+          schemaContent = fs.readFileSync(schemaPath, 'utf8');
+          debugLog('DefaultAI', 'Loaded JSON schema from file');
+        } else {
+          debugLog('DefaultAI', 'Schema file not found at:', schemaPath);
+        }
+      } catch (error) {
+        debugLog('DefaultAI', 'Error loading schema file:', error);
+      }
+      
+      // Create the system prompt
+      const systemPrompt = `You are an AI designed to analyze git diffs and generate content for a conventional commit message JSON object. Your output MUST be a JSON object conforming to the schema enforced by the server. Based on the provided git diff, analyze the changes and provide the content for the JSON fields according to these rules, following the Conventional Commits specification (conventionalcommits.org):
 
 1. For the \`type\` field, choose one of the following:
    - feat: A new feature
@@ -141,28 +184,70 @@ export class DefaultAIRepositoryImpl implements AIRepository {
 7. For breaking changes:
    - If the change is breaking, ensure the \`type\` is \`breaking\` or append \`!\` after the subject in the conceptual header (which will be reflected in the \`subject\` field content or possibly noted in the \`body.summary\`). Clearly state the breaking nature in the \`subject\` or \`body.summary\`.
 
-Analyze the following git diff and provide the content for the commit message JSON object. Generate ONLY the JSON object.`
+${schemaContent ? `Here is the JSON schema that your response must conform to:\n\n${schemaContent}\n\n` : ''}
+
+Analyze the following git diff and provide the content for the commit message JSON object. Generate ONLY the JSON object.`;
+      
+      const postData = JSON.stringify({
+        model: this.apiModel,
+        messages: [
+          {
+            role: "system",
+            content: systemPrompt
           },
           {
             role: "user",
             content: `Analyze this git diff:\n\n\`\`\`diff\n${prompt}\n\`\`\`\n`
           }
         ],
-        temperature: 0.7,
-        max_tokens: 1000,
+        temperature: 0.8,
+        max_tokens: 8000,
         stream: false
       });
       
       const options = {
-        hostname: '192.168.1.2',
-        port: 1234,
-        path: '/v1/chat/completions',
+        hostname: this.apiHost,
+        port: this.apiPort,
+        path: this.apiEndpoint,
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Content-Length': Buffer.byteLength(postData)
-        }
+        },
+        timeout: this.apiTimeout
       };
+      
+      // Estimate and log token count when debug is enabled
+      const estimatedSystemTokens = this.estimateTokenCount(systemPrompt);
+      const estimatedUserTokens = this.estimateTokenCount(prompt);
+      const estimatedTotalTokens = estimatedSystemTokens + estimatedUserTokens;
+      
+      debugLog('DefaultAI', `Making API request to: http://${this.apiHost}:${this.apiPort}${this.apiEndpoint}`);
+      debugLog('DefaultAI', 'Estimated token count:', {
+        system_prompt: estimatedSystemTokens,
+        user_prompt: estimatedUserTokens,
+        total: estimatedTotalTokens
+      });
+      
+      // Parse the post data to access and log the full messages
+      const parsedPostData = JSON.parse(postData);
+      
+      // Log the full request payload in debug mode
+      debugLog('DefaultAI', 'API request payload:', {
+        method: options.method,
+        url: `http://${this.apiHost}:${this.apiPort}${this.apiEndpoint}`,
+        headers: options.headers,
+        body: {
+          model: parsedPostData.model,
+          messages: parsedPostData.messages, // This will fully expand the messages array
+          temperature: parsedPostData.temperature,
+          max_tokens: parsedPostData.max_tokens,
+          stream: parsedPostData.stream
+        }
+      }, 'api');
+      
+      // Add a visual separator in debug logs
+      debugLog('DefaultAI', styles.debugSeparator());
       
       const req = http.request(options, (res) => {
         let data = '';
@@ -174,6 +259,30 @@ Analyze the following git diff and provide the content for the commit message JS
         res.on('end', () => {
           try {
             const jsonResponse = JSON.parse(data);
+            
+            // Log token usage information when debug is enabled
+            if (jsonResponse.usage) {
+              debugLog('DefaultAI', 'Token usage:', {
+                prompt_tokens: jsonResponse.usage.prompt_tokens,
+                completion_tokens: jsonResponse.usage.completion_tokens,
+                total_tokens: jsonResponse.usage.total_tokens
+              });
+            }
+            
+            // Log the API response in debug mode with full content
+            debugLog('DefaultAI', 'API response:', {
+              id: jsonResponse.id,
+              object: jsonResponse.object,
+              created: jsonResponse.created,
+              model: jsonResponse.model,
+              choices: jsonResponse.choices,
+              usage: jsonResponse.usage,
+              system_fingerprint: jsonResponse.system_fingerprint
+            }, 'api');
+            
+            // Add a visual separator after API response
+            debugLog('DefaultAI', styles.debugSeparator());
+            
             resolve(jsonResponse);
           } catch (e: unknown) {
             const errorMessage = e instanceof Error ? e.message : String(e);
@@ -184,6 +293,11 @@ Analyze the following git diff and provide the content for the commit message JS
       
       req.on('error', (e) => {
         reject(new Error(`API request failed: ${e.message}`));
+      });
+      
+      req.on('timeout', () => {
+        req.destroy();
+        reject(new Error(`API request timed out after ${this.apiTimeout}ms`));
       });
       
       req.write(postData);

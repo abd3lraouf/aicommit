@@ -38,15 +38,25 @@ ${styles.debugHighlight('To report any issues:')}
  * @param context The context/category of the log
  * @param message The message to log
  * @param data Optional data to include
+ * @param type Optional type of debug log ('api' for API-related logs)
  */
-export function debugLog(context: string, message: string, data?: any): void {
+export function debugLog(context: string, message: string, data?: any, type?: 'api'): void {
   if (!isDebugMode) return;
+  
+  // If message is the debug separator, just print it directly
+  if (message === styles.debugSeparator()) {
+    console.log(message);
+    return;
+  }
   
   console.log(styles.debugText(context, message));
   if (data !== undefined) {
     if (typeof data === 'string') {
       // If data is a string, show it with debug styling
       console.log(styles.debug('Data:'), styles.debug(data));
+    } else if (type === 'api') {
+      // For API-related data, use the API debug styling with expanded objects
+      console.log(styles.debugApi('API Payload:'), JSON.stringify(data, null, 2));
     } else {
       // For objects or other types, use a more neutral color but still indicate debug
       console.log(styles.debug('Data:'), data);

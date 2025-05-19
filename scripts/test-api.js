@@ -6,6 +6,24 @@
  */
 
 const http = require('http');
+const path = require('path');
+const fs = require('fs');
+require('dotenv').config();
+
+// Get API configuration from environment variables or fallback to defaults
+const API_HOST = process.env.AI_API_HOST || '192.168.1.2';
+const API_PORT = parseInt(process.env.AI_API_PORT || '1234', 10);
+const API_ENDPOINT = process.env.AI_API_ENDPOINT || '/v1/chat/completions';
+const API_MODEL = process.env.AI_API_MODEL || 'local-model';
+const API_TIMEOUT = parseInt(process.env.AI_API_TIMEOUT || '30000', 10);
+
+// Log the configuration being used
+console.log('Using API configuration:');
+console.log(`Host: ${API_HOST}`);
+console.log(`Port: ${API_PORT}`);
+console.log(`Endpoint: ${API_ENDPOINT}`);
+console.log(`Model: ${API_MODEL}`);
+console.log(`Timeout: ${API_TIMEOUT}ms`);
 
 // Sample git diff for testing
 const sampleDiff = `
@@ -47,12 +65,26 @@ import { debugLog } from '../cli/debug';
 +  system_fingerprint: string;
 +}`;
 
+// Try to load the JSON schema
+let schemaContent = '';
+try {
+  const schemaPath = path.join(__dirname, '../src/schemas/commit-message-schema.json');
+  if (fs.existsSync(schemaPath)) {
+    schemaContent = fs.readFileSync(schemaPath, 'utf8');
+    console.log('Loaded JSON schema from file');
+  } else {
+    console.log('Schema file not found at:', schemaPath);
+  }
+} catch (error) {
+  console.error('Error loading schema file:', error);
+}
+
 // Function to test the API integration
 async function testApiIntegration() {
-  console.log('Testing API integration...');
+  console.log(`Testing API integration with server at http://${API_HOST}:${API_PORT}${API_ENDPOINT}`);
   
   const postData = JSON.stringify({
-    model: "local-model",
+    model: API_MODEL,
     messages: [
       {
         role: "system",
@@ -67,6 +99,20 @@ async function testApiIntegration() {
    - perf: A code change that improves performance
    - test: Adding missing or correcting existing tests
    - chore: Changes to the build process or auxiliary tools
+   - ci: Continuous integration changes
+   - build: Changes to the build process
+   - revert: Revert changes
+   - merge: Merge branches
+   - deps: Update dependencies
+   - breaking: Breaking changes
+   - security: Security fixes
+   - config: Configuration changes
+   - i18n: Internationalization changes
+   - release: Release changes
+   - db: Database changes
+   - a11y: Accessibility changes
+   - ux: User experience changes
+   - init: Initial commit
 
 2. For the \`emoji\` field, select a single emoji that conventionally corresponds to the chosen \`type\` (e.g., ✨ for feat, 🐛 for fix, 📚 for docs).
 
@@ -83,6 +129,9 @@ async function testApiIntegration() {
    - Focus on "why" this change matters and its overall impact.
    - Keep this short but informative (aim for one sentence).
    - Use imperative mood consistently.
+   - Avoid jargon or overly technical terms.
+   - Use clear and concise language.
+   - Avoid using "we" or "I" - focus on the change itself.
 
 6. For the \`body.bulletPoints\` field (detailed changes):
    - Provide an array of strings.
@@ -92,6 +141,8 @@ async function testApiIntegration() {
    - Use imperative mood consistently.
    - Provide content for at least one bullet point.
 
+${schemaContent ? `Here is the JSON schema that your response must conform to:\n\n${schemaContent}\n\n` : ''}
+
 Analyze the following git diff and provide the content for the commit message JSON object. Generate ONLY the JSON object.`
       },
       {
@@ -99,23 +150,26 @@ Analyze the following git diff and provide the content for the commit message JS
         content: `Analyze this git diff:\n\n\`\`\`diff\n${sampleDiff}\n\`\`\`\n`
       }
     ],
-    temperature: 0.7,
-    max_tokens: 1000,
+    temperature: 0.8,
+    max_tokens: 8000,
     stream: false
   });
   
   const options = {
-    hostname: '192.168.1.2',
-    port: 1234,
-    path: '/v1/chat/completions',
+    hostname: API_HOST,
+    port: API_PORT,
+    path: API_ENDPOINT,
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'Content-Length': Buffer.byteLength(postData)
-    }
+    },
+    timeout: API_TIMEOUT
   };
   
   return new Promise((resolve, reject) => {
+    console.log(`Sending request to: http://${API_HOST}:${API_PORT}${API_ENDPOINT}`);
+    
     const req = http.request(options, (res) => {
       let data = '';
       
@@ -127,28 +181,36 @@ Analyze the following git diff and provide the content for the commit message JS
         try {
           const response = JSON.parse(data);
           
-          console.log('API Response:');
+          console.log('API Response Status:', res.statusCode);
+          console.log('\nAPI Response:');
           console.log(JSON.stringify(response, null, 2));
           
           // Extract and parse the JSON content from the response
           const content = response.choices[0]?.message?.content;
           if (content) {
             console.log('\nParsed Commit Content:');
-            const commitContent = JSON.parse(content);
-            console.log(JSON.stringify(commitContent, null, 2));
-            
-            // Format the commit message
-            const scope = commitContent.scope ? `(${commitContent.scope})` : '';
-            const headline = `${commitContent.emoji} ${commitContent.type}${scope}: ${commitContent.subject}`;
-            const summary = commitContent.body.summary || '';
-            const bulletPoints = commitContent.body.bulletPoints
-              .map(point => `- ${point}`)
-              .join('\n');
-            
-            const formattedMessage = `${headline}\n\n${summary}\n\n${bulletPoints}`;
-            
-            console.log('\nFormatted Commit Message:');
-            console.log(formattedMessage);
+            try {
+              const commitContent = JSON.parse(content);
+              console.log(JSON.stringify(commitContent, null, 2));
+              
+              // Format the commit message
+              const scope = commitContent.scope ? `(${commitContent.scope})` : '';
+              const headline = `${commitContent.emoji} ${commitContent.type}${scope}: ${commitContent.subject}`;
+              const summary = commitContent.body.summary || '';
+              const bulletPoints = commitContent.body.bulletPoints
+                .map(point => `- ${point}`)
+                .join('\n');
+              
+              const formattedMessage = `${headline}\n\n${summary}\n\n${bulletPoints}`;
+              
+              console.log('\nFormatted Commit Message:');
+              console.log(formattedMessage);
+            } catch (parseError) {
+              console.error('Error parsing commit content as JSON:', parseError);
+              console.log('Raw content received:', content);
+            }
+          } else {
+            console.error('No content found in API response');
           }
           
           resolve(true);
@@ -164,6 +226,12 @@ Analyze the following git diff and provide the content for the commit message JS
       reject(error);
     });
     
+    req.on('timeout', () => {
+      console.error(`Request timed out after ${API_TIMEOUT}ms`);
+      req.destroy();
+      reject(new Error('Request timed out'));
+    });
+    
     req.write(postData);
     req.end();
   });
@@ -171,5 +239,5 @@ Analyze the following git diff and provide the content for the commit message JS
 
 // Run the test
 testApiIntegration()
-  .then(() => console.log('Test completed successfully'))
-  .catch(error => console.error('Test failed:', error));
+  .then(() => console.log('\nTest completed successfully'))
+  .catch(error => console.error('\nTest failed:', error));

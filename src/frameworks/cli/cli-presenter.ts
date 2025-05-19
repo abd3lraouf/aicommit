@@ -7,17 +7,18 @@ import * as path from 'path';
 import * as os from 'os';
 import * as child_process from 'child_process';
 import yargs from 'yargs';
-import { hideBin } from 'yargs/helpers';
 import chalk from 'chalk';
 import boxen from 'boxen';
-import figures from 'figures';
 import { styles } from './styles';
+import { CliOptions as ConfigCliOptions } from '../../config';
 
-export interface CliOptions {
-  dryRun: boolean;
-  interactive: boolean;
-  verbose: boolean;
-  debug: boolean;
+export interface CliOptions extends ConfigCliOptions {
+  // Extended CLI options with API configuration
+  apiHost?: string;
+  apiPort?: number;
+  apiEndpoint?: string;
+  apiModel?: string;
+  apiTimeout?: number;
 }
 
 export class CliPresenter {
@@ -51,6 +52,32 @@ export class CliPresenter {
         description: 'Enable debug logging for troubleshooting',
         default: false
       })
+      // API Configuration Options
+      .option('api-host', {
+        type: 'string',
+        description: 'API server hostname',
+        group: 'API Configuration:'
+      })
+      .option('api-port', {
+        type: 'number',
+        description: 'API server port',
+        group: 'API Configuration:'
+      })
+      .option('api-endpoint', {
+        type: 'string',
+        description: 'API endpoint path',
+        group: 'API Configuration:'
+      })
+      .option('api-model', {
+        type: 'string',
+        description: 'AI model name to use',
+        group: 'API Configuration:'
+      })
+      .option('api-timeout', {
+        type: 'number',
+        description: 'API request timeout in milliseconds',
+        group: 'API Configuration:'
+      })
       .help()
       .alias('help', 'h')
       .parseSync();
@@ -59,7 +86,12 @@ export class CliPresenter {
       dryRun: parsedArgs['dry-run'] || false,
       interactive: parsedArgs['interactive'] || false,
       verbose: parsedArgs['verbose'] !== false, // Default to true unless explicitly set to false
-      debug: parsedArgs['debug'] || false
+      debug: parsedArgs['debug'] || false,
+      apiHost: parsedArgs['api-host'],
+      apiPort: parsedArgs['api-port'],
+      apiEndpoint: parsedArgs['api-endpoint'],
+      apiModel: parsedArgs['api-model'],
+      apiTimeout: parsedArgs['api-timeout']
     };
   }
 

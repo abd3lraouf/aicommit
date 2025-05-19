@@ -74,6 +74,14 @@ npx aicommit
 - `--debug`: Enable debug logging for troubleshooting message extraction issues
 - `--help` (`-h`): Show help information
 
+#### API Configuration Options
+
+- `--api-host`: Set the API server hostname (overrides configuration files)
+- `--api-port`: Set the API server port number
+- `--api-endpoint`: Set the API endpoint path
+- `--api-model`: Set the AI model name to use
+- `--api-timeout`: Set the API request timeout in milliseconds
+
 ### Examples
 
 ```bash
@@ -89,6 +97,77 @@ aicommit --no-verbose
 # Enable debug mode for troubleshooting
 aicommit --debug
 ```
+
+### Configuration
+
+AICommit supports multiple ways to configure the tool to match your preferences:
+
+#### Configuration Files
+
+You can create a configuration file in JSON format:
+
+- `.aicommitrc` or `.aicommitrc.json` in your project directory
+- `.aicommitrc` or `.aicommitrc.json` in your home directory
+
+Example `.aicommitrc.json`:
+
+```json
+{
+  "api": {
+    "host": "localhost",
+    "port": 1234,
+    "endpoint": "/v1/chat/completions",
+    "model": "local-model",
+    "timeout": 30000
+  },
+  "cli": {
+    "dryRun": false,
+    "interactive": true,
+    "verbose": true,
+    "debug": false
+  }
+}
+```
+
+#### Configuration Priority
+
+AICommit loads configuration in the following order (highest priority first):
+
+1. Command line arguments
+2. Project directory `.aicommitrc` file
+3. Home directory `.aicommitrc` file
+4. Environment variables (from `.env` file)
+5. Default values
+
+This allows you to set global defaults in your home directory while having project-specific overrides.
+
+### Debug Mode
+
+Debug mode provides detailed logging to help troubleshoot issues and gain insights into how AICommit works.
+
+To enable debug mode, use the `--debug` flag or set `debug: true` in your configuration file:
+
+```bash
+aicommit --debug
+```
+
+#### Token Counting
+
+When running AICommit in debug mode, it will display token count information for API requests:
+
+- **Estimated Token Count**: Before making the API request, AICommit estimates how many tokens will be used for the system prompt and user input.
+- **Actual Token Usage**: After receiving the API response, AICommit displays the actual token usage reported by the API.
+
+Example output:
+```
+→ [DefaultAI] Estimated token count: { system_prompt: 1243, user_prompt: 156, total: 1399 }
+→ [DefaultAI] Token usage: { prompt_tokens: 1412, completion_tokens: 312, total_tokens: 1724 }
+```
+
+This feature is useful for:
+- Monitoring token usage for API billing purposes
+- Debugging API context limitations
+- Optimizing prompts to reduce token usage
 
 ## Features
 
@@ -191,55 +270,62 @@ chmod +x $(which aicommit)
 
 ## API-Based Commit Message Generation
 
-AICommit now supports using a local JSON API server for commit message generation. This allows you to:
+AICommit uses a local JSON API server for commit message generation. This allows you to:
 
-1. Use your preferred LLM server instead of Amazon Q
-2. Get consistent, well-formatted commit messages in JSON format
-3. Customize the prompt and model parameters
+1. Use your preferred LLM model for generating commit messages
+2. Get consistent, well-formatted commit messages with conventional format and emojis
+3. Customize the model and API parameters via environment variables
 
-### Setting Up a Local API Server
+### Required AI Model
 
-To use the API-based commit message generation, you need to set up a local API server that implements the OpenAI-compatible chat completions API endpoint. The server should:
+We recommend using the **[THUDM/GLM-4-32B-Base-0414](https://huggingface.co/THUDM/GLM-4-32B-Base-0414)** model from Hugging Face, which has been tested with our system and works well with the required JSON output format.
 
-1. Listen on a configurable host and port (default: http://192.168.1.2:1234)
-2. Implement the `/v1/chat/completions` endpoint
-3. Accept POST requests with a JSON payload containing a model name and messages array
-4. Return a response in OpenAI API format with the commit message JSON in the content field
+For details about server setup and model requirements, see:
+- [AI_SERVER_SETUP.md](./AI_SERVER_SETUP.md) - Detailed server setup instructions and JSON schema
 
-#### Sample JSON Response Format
+### Configuration
 
-The API should return JSON content that follows this structure:
+AICommit uses a `.env` file for configuration. The project now includes a pre-configured `.env` file with the following default settings:
 
-```json
-{
-  "emoji": "✨", 
-  "type": "feat",
-  "scope": "api",
-  "subject": "add oauth authentication",
-  "body": {
-    "summary": "Enhances security and follows industry standards",
-    "bulletPoints": [
-      "Add login screen with provider selection",
-      "Implement token management for Google auth",
-      "Create secure token storage"
-    ]
-  }
-}
+```
+AI_API_HOST=192.168.1.2  # The host where your AI API server is running
+AI_API_PORT=1234         # The port your AI API server is listening on
+AI_API_MODEL=local-model # The model name to use
 ```
 
-### Testing the API Integration
+You can modify these settings by editing the `.env` file directly:
 
-You can test the API integration using the provided test script:
+```bash
+# Edit the .env file to match your server configuration
+nano .env
+```
+
+If you need to reset to the default configuration:
+
+```bash
+# Reset to the default configuration
+npm run setup
+```
+
+Then edit the `.env` file to match your AI server configuration:
+
+```
+AI_API_HOST=localhost
+AI_API_PORT=1234
+AI_API_ENDPOINT=/v1/chat/completions
+AI_API_MODEL=THUDM/GLM-4-32B-Base-0414
+AI_API_TIMEOUT=30000
+```
+
+### Testing Your API Setup
+
+You can test your API configuration with the provided test script:
 
 ```bash
 node scripts/test-api.js
 ```
 
-Make sure to update the API endpoint in `src/frameworks/default-ai/default-ai-repository-impl.ts` to match your local server configuration.
-
-### Customizing the API Endpoint
-
-By default, AICommit connects to a server at `http://192.168.1.2:1234`. You can modify this in the code or add configuration options to specify a different endpoint.
+This will send a sample git diff to your API and display the generated commit message.
 
 ## Contributing
 

@@ -15,8 +15,6 @@ dist/
 
 # Environment variables
 .env
-.env.local
-.env.*
 
 # Editor directories and files
 .idea
