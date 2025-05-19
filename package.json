@@ -4,7 +4,8 @@
   "description": "Git Commit Script - Generate smart commit messages with emojis",
   "main": "dist/index.js",
   "bin": {
-    "aicommit": "dist/cli.js"
+    "aicommit": "dist/cli.js",
+    "aicommit-config": "aicommit-config.mjs"
   },
   "engines": {
     "node": ">=18.0.0"
@@ -13,6 +14,7 @@
     "dist",
     "scripts",
     "aicommit-cli.js",
+    "aicommit-config.mjs",
     "src/schemas",
     "src/simplified-cli.mjs",
     "README.md",
@@ -24,7 +26,7 @@
   "scripts": {
     "clean": "rm -rf dist",
     "prebuild": "pnpm run clean",
-    "build": "tsc && chmod +x aicommit-cli.js && chmod +x dist/cli.js dist/index.js && mkdir -p dist/schemas && cp src/schemas/*.json dist/schemas/",
+    "build": "tsc && chmod +x aicommit-cli.js aicommit-config.mjs && chmod +x dist/cli.js dist/index.js && mkdir -p dist/schemas && cp src/schemas/*.json dist/schemas/",
     "postbuild": "sed -i.bak '1d' dist/cli.js && echo '#!/usr/bin/env node' | cat - dist/cli.js > dist/cli.js.tmp && mv dist/cli.js.tmp dist/cli.js && sed -i.bak '1d' dist/index.js && echo '#!/usr/bin/env node' | cat - dist/index.js > dist/index.js.tmp && mv dist/index.js.tmp dist/index.js && rm dist/*.bak",
     "start": "node --es-module-specifier-resolution=node dist/index.js",
     "dev": "tsc --watch",

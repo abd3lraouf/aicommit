@@ -34,6 +34,12 @@ export class App {
       // If no options provided, parse from command line
       const cliOptions = options || this.cliPresenter.parseArguments();
       
+      // Check if the user is running a config command
+      if (cliOptions.command === 'config') {
+        this.cliPresenter.runConfigSetup();
+        return 0;
+      }
+      
       // Initialize configuration with CLI options
       await initializeConfig({
         'api-host': cliOptions.apiHost,

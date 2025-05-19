@@ -3,7 +3,7 @@
     "host": "192.168.1.2",
     "port": 1234,
     "endpoint": "/v1/chat/completions",
-    "model": "git-commit-3b",
+    "model": "qwen3-4b-teen-emo",
     "timeout": 3000000
   },
   "cli": {

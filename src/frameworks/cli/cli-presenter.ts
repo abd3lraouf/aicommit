@@ -25,6 +25,9 @@ export interface CliOptions extends ConfigCliOptions {
   interactive: boolean;
   verbose: boolean;
   debug: boolean;
+  
+  // Command options
+  command?: string;
 }
 
 export class CliPresenter {
@@ -35,10 +38,7 @@ export class CliPresenter {
    */
   parseArguments(args: string[] = process.argv.slice(2)): CliOptions {
     const parsedArgs = yargs(args)
-      .command('config', 'Run interactive configuration setup', () => {
-        this.runConfigSetup();
-        process.exit(0);
-      })
+      .command('config', 'Run interactive configuration setup')
       .option('dry-run', {
         alias: 'd',
         type: 'boolean',
@@ -92,7 +92,11 @@ export class CliPresenter {
       .alias('help', 'h')
       .parseSync();
 
+    // Check if a command was specified
+    const command = parsedArgs._[0] as string;
+      
     return {
+      command: command,
       dryRun: parsedArgs['dry-run'] || false,
       interactive: parsedArgs['interactive'] || false,
       verbose: parsedArgs['verbose'] !== false, // Default to true unless explicitly set to false
@@ -221,6 +225,34 @@ export class CliPresenter {
     const shouldShow = options?.verbose ?? true;
     if (shouldShow) {
       console.log(`\n${styles.step(current, total)} ${chalk.bold(message)}\n`);
+    }
+  }
+
+  /**
+   * Run the interactive configuration setup
+   */
+  runConfigSetup(): void {
+    const configScript = path.resolve(
+      process.cwd(),
+      'scripts',
+      'setup',
+      'setup-config.mjs'
+    );
+    
+    if (fs.existsSync(configScript)) {
+      console.log(styles.infoText('Running interactive configuration setup...'));
+      try {
+        // Run the setup-config.mjs script
+        child_process.spawnSync('node', [configScript], { 
+          stdio: 'inherit',
+          shell: true
+        });
+        console.log(styles.successText('Configuration setup completed.'));
+      } catch (error) {
+        console.error(styles.errorText(`Error running configuration setup: ${error}`));
+      }
+    } else {
+      console.error(styles.errorText(`Configuration setup script not found at: ${configScript}`));
     }
   }
 }
