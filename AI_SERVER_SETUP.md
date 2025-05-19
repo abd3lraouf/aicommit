@@ -145,10 +145,10 @@ docker-compose up -d
 AICommit comes with a pre-configured `.env` file that uses these default settings:
 
 ```
-AI_API_HOST=192.168.1.2
+AI_API_HOST=localhost
 AI_API_PORT=1234
 AI_API_ENDPOINT=/v1/chat/completions
-AI_API_MODEL=local-model
+AI_API_MODEL=Qwen/Qwen3-4B
 AI_API_TIMEOUT=30000
 ```
 

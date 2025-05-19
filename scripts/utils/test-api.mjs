@@ -19,10 +19,10 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Get API configuration from environment variables or fallback to defaults
-const API_HOST = process.env.AI_API_HOST || '192.168.1.2';
+const API_HOST = process.env.AI_API_HOST || 'localhost';
 const API_PORT = parseInt(process.env.AI_API_PORT || '1234', 10);
 const API_ENDPOINT = process.env.AI_API_ENDPOINT || '/v1/chat/completions';
-const API_MODEL = process.env.AI_API_MODEL || 'local-model';
+const API_MODEL = process.env.AI_API_MODEL || 'Qwen/Qwen3-4B';
 const API_TIMEOUT = parseInt(process.env.AI_API_TIMEOUT || '30000', 10);
 
 // Log the configuration being used

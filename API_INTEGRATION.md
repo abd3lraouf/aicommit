@@ -23,7 +23,7 @@ This update replaces the text-based commit message generation with a local JSON 
 
 To test the API integration:
 
-1. Make sure your API server is running at the configured endpoint (default: http://192.168.1.2:1234)
+1. Make sure your API server is running at the configured endpoint (default: http://localhost:1234)
 2. Run the test script with `node scripts/test-api.js`
 3. Check the console output for the API response and formatted commit message
 
@@ -32,7 +32,7 @@ To test the API integration:
 The API endpoint is currently hardcoded in `src/frameworks/default-ai/default-ai-repository-impl.ts` as:
 
 ```typescript
-private apiUrl = 'http://192.168.1.2:1234';
+private apiUrl = 'http://localhost:1234';
 ```
 
 You may need to modify this to match your local server configuration.

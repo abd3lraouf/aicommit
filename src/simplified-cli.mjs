@@ -48,7 +48,7 @@ async function main() {
       .option('api-host', {
         type: 'string',
         description: 'API server host',
-        default: '192.168.1.2'
+        default: 'localhost'
       })
       .option('api-port', {
         type: 'number',

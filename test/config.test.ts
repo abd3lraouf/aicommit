@@ -40,7 +40,7 @@ describe('Configuration System', () => {
       expect(config.api.host).toBe('localhost');
       expect(config.api.port).toBe(1234);
       expect(config.api.endpoint).toBe('/v1/chat/completions');
-      expect(config.api.model).toBe('local-model');
+      expect(config.api.model).toBe('Qwen/Qwen3-4B');
       expect(config.api.timeout).toBe(30000);
     });
     
