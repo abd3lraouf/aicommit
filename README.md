@@ -8,7 +8,7 @@
 
 ## What is AICommit?
 
-AICommit analyzes your code changes and automatically writes professional commit messages following the [Conventional Commits](https://conventionalcommits.org/) standard. No more struggling to write good commit messages!
+AICommit analyzes your code changes and automatically writes professional commit messages following the [Conventional Commits](https://conventionalcommits.org/) standard. It works with **[LM Studio](https://lmstudio.ai/)** to run AI models locally on your machine - no cloud services or API keys required!
 
 **Before AICommit:**
 ```bash
@@ -38,13 +38,14 @@ aicommit
 npm install -g @abd3lraouf/aicommit
 ```
 
-### 2. Set up AI Server
+### 2. Set up AI Server (LM Studio)
 
-You'll need a local AI server running. We recommend [LM Studio](https://lmstudio.ai/) with the `qwen3-4b-teen-emo` model:
+AICommit works with **[LM Studio](https://lmstudio.ai/)** - a user-friendly local AI server. Here's how to set it up:
 
-1. Download and install LM Studio
-2. Load the `qwen3-4b-teen-emo` model
-3. Start the local server (usually runs on `http://localhost:1234`)
+1. **Download LM Studio**: Visit [lmstudio.ai](https://lmstudio.ai/) and install for your OS
+2. **Download Model**: Search for and download `qwen3-4b-teen-emo` 
+3. **Load Model**: Click "Load Model" and select `qwen3-4b-teen-emo`
+4. **Start Server**: Click "Start Server" (runs on `http://localhost:1234` by default)
 
 ### 3. Configure AICommit
 
@@ -67,10 +68,12 @@ aicommit
 ## Features
 
 - **🤖 Smart Analysis**: Understands your code changes and writes appropriate messages
+- **🏠 Local AI**: Powered by LM Studio - runs entirely on your machine, no cloud required
 - **📏 Adaptive Detail**: Small changes get short messages, big changes get detailed ones
 - **😊 Emoji Support**: Automatically adds relevant emojis to your commits
 - **🔄 Interactive Mode**: Review and edit messages before committing
 - **⚙️ Configurable**: Customize everything to match your workflow
+- **🔒 Privacy First**: Your code never leaves your machine
 
 ## Installation
 
@@ -91,20 +94,31 @@ npx aicommit
 
 ### AI Server Setup
 
-AICommit needs a local AI server to generate commit messages. Here's the easiest way:
+AICommit requires a local AI server to generate commit messages. We **strongly recommend LM Studio** for the best experience:
 
-#### Option 1: LM Studio (Recommended)
+#### LM Studio (Recommended) 🌟
 
+**Why LM Studio?**
+- Easy-to-use graphical interface
+- Built-in model management
+- Optimized for local inference
+- Compatible with AICommit out of the box
+- Supports GBNF grammar for structured output
+
+**Setup Steps:**
 1. **Download LM Studio**: Visit [lmstudio.ai](https://lmstudio.ai/) and download for your OS
 2. **Install a Model**: Search for and download `qwen3-4b-teen-emo`
-3. **Start Server**: Click "Start Server" in LM Studio (default: `localhost:1234`)
+3. **Load Model**: Click "Load Model" and select the downloaded model
+4. **Start Server**: Click "Start Server" in LM Studio (default: `localhost:1234`)
 
-#### Option 2: Other Compatible Servers
+#### Alternative Servers
 
-Any server that implements the OpenAI chat completions API will work:
-- [Ollama](https://ollama.ai/) with OpenAI compatibility
+Other servers that implement the OpenAI chat completions API:
+- [Ollama](https://ollama.ai/) with OpenAI compatibility mode
 - [LocalAI](https://github.com/go-skynet/LocalAI)
-- Custom implementations
+- Custom llama.cpp servers with grammar support
+
+> **Note**: For best results with structured output and GBNF grammar support, we recommend LM Studio.
 
 ### Configuration
 
