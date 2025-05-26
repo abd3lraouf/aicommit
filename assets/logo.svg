@@ -1,0 +1,147 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradient definitions -->
+    <linearGradient id="brainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="commitGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f093fb;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f5576c;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="neuralGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4facfe;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00f2fe;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Glow filter -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Drop shadow -->
+    <filter id="dropshadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="2" dy="4" stdDeviation="3" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="95" fill="url(#brainGradient)" filter="url(#dropshadow)" opacity="0.1"/>
+  
+  <!-- AI Brain/Neural Network -->
+  <g transform="translate(100, 100)">
+    <!-- Central brain node -->
+    <circle cx="0" cy="0" r="25" fill="url(#brainGradient)" filter="url(#glow)"/>
+    
+    <!-- Neural connections -->
+    <g stroke="url(#neuralGradient)" stroke-width="2" fill="none" opacity="0.7">
+      <!-- Main neural pathways -->
+      <path d="M -20,-15 Q -35,-25 -45,-10 Q -50,0 -45,10 Q -35,25 -20,15"/>
+      <path d="M 20,-15 Q 35,-25 45,-10 Q 50,0 45,10 Q 35,25 20,15"/>
+      <path d="M -15,-20 Q -25,-35 -10,-45 Q 0,-50 10,-45 Q 25,-35 15,-20"/>
+      <path d="M -15,20 Q -25,35 -10,45 Q 0,50 10,45 Q 25,35 15,20"/>
+      
+      <!-- Secondary connections -->
+      <path d="M -30,-30 Q -40,-40 -25,-45"/>
+      <path d="M 30,-30 Q 40,-40 25,-45"/>
+      <path d="M -30,30 Q -40,40 -25,45"/>
+      <path d="M 30,30 Q 40,40 25,45"/>
+    </g>
+    
+    <!-- Neural nodes -->
+    <g fill="url(#neuralGradient)">
+      <circle cx="-45" cy="-10" r="4"/>
+      <circle cx="45" cy="-10" r="4"/>
+      <circle cx="-10" cy="-45" r="4"/>
+      <circle cx="10" cy="-45" r="4"/>
+      <circle cx="-45" cy="10" r="4"/>
+      <circle cx="45" cy="10" r="4"/>
+      <circle cx="-10" cy="45" r="4"/>
+      <circle cx="10" cy="45" r="4"/>
+      
+      <!-- Corner nodes -->
+      <circle cx="-35" cy="-35" r="3"/>
+      <circle cx="35" cy="-35" r="3"/>
+      <circle cx="-35" cy="35" r="3"/>
+      <circle cx="35" cy="35" r="3"/>
+    </g>
+    
+    <!-- Git commit symbols inside brain -->
+    <g transform="scale(0.8)">
+      <!-- Commit nodes -->
+      <circle cx="-15" cy="-8" r="3" fill="#ffffff" opacity="0.9"/>
+      <circle cx="0" cy="-8" r="3" fill="#ffffff" opacity="0.9"/>
+      <circle cx="15" cy="-8" r="3" fill="#ffffff" opacity="0.9"/>
+      
+      <!-- Commit connections -->
+      <line x1="-12" y1="-8" x2="-3" y2="-8" stroke="#ffffff" stroke-width="2" opacity="0.7"/>
+      <line x1="3" y1="-8" x2="12" y2="-8" stroke="#ffffff" stroke-width="2" opacity="0.7"/>
+      
+      <!-- Branch lines -->
+      <line x1="0" y1="-5" x2="0" y2="5" stroke="#ffffff" stroke-width="2" opacity="0.7"/>
+      <line x1="0" y1="5" x2="-8" y2="12" stroke="#ffffff" stroke-width="2" opacity="0.7"/>
+      <line x1="0" y1="5" x2="8" y2="12" stroke="#ffffff" stroke-width="2" opacity="0.7"/>
+      
+      <!-- Branch commit nodes -->
+      <circle cx="-8" cy="12" r="2.5" fill="#ffffff" opacity="0.8"/>
+      <circle cx="8" cy="12" r="2.5" fill="#ffffff" opacity="0.8"/>
+    </g>
+  </g>
+  
+  <!-- Floating commit symbols around the brain -->
+  <g fill="url(#commitGradient)" opacity="0.6">
+    <!-- Top commits -->
+    <circle cx="60" cy="30" r="6" filter="url(#glow)"/>
+    <circle cx="140" cy="35" r="5"/>
+    
+    <!-- Side commits -->
+    <circle cx="25" cy="80" r="5"/>
+    <circle cx="175" cy="90" r="6" filter="url(#glow)"/>
+    
+    <!-- Bottom commits -->
+    <circle cx="70" cy="170" r="5"/>
+    <circle cx="130" cy="165" r="6" filter="url(#glow)"/>
+  </g>
+  
+  <!-- Connecting lines between floating commits -->
+  <g stroke="url(#commitGradient)" stroke-width="2" fill="none" opacity="0.4">
+    <path d="M 60,30 Q 80,50 100,75"/>
+    <path d="M 140,35 Q 120,55 100,75"/>
+    <path d="M 25,80 Q 50,90 75,100"/>
+    <path d="M 175,90 Q 150,100 125,100"/>
+    <path d="M 70,170 Q 85,150 100,125"/>
+    <path d="M 130,165 Q 115,145 100,125"/>
+  </g>
+  
+  <!-- AI sparkles/magic effects -->
+  <g fill="#ffffff" opacity="0.8">
+    <!-- Sparkle 1 -->
+    <g transform="translate(40, 50) scale(0.8)">
+      <path d="M 0,-8 L 2,-2 L 8,0 L 2,2 L 0,8 L -2,2 L -8,0 L -2,-2 Z"/>
+    </g>
+    
+    <!-- Sparkle 2 -->
+    <g transform="translate(160, 60) scale(0.6)">
+      <path d="M 0,-8 L 2,-2 L 8,0 L 2,2 L 0,8 L -2,2 L -8,0 L -2,-2 Z"/>
+    </g>
+    
+    <!-- Sparkle 3 -->
+    <g transform="translate(45, 150) scale(0.7)">
+      <path d="M 0,-8 L 2,-2 L 8,0 L 2,2 L 0,8 L -2,2 L -8,0 L -2,-2 Z"/>
+    </g>
+    
+    <!-- Sparkle 4 -->
+    <g transform="translate(155, 140) scale(0.5)">
+      <path d="M 0,-8 L 2,-2 L 8,0 L 2,2 L 0,8 L -2,2 L -8,0 L -2,-2 Z"/>
+    </g>
+  </g>
+  
+  <!-- Subtle outer glow -->
+  <circle cx="100" cy="100" r="90" fill="none" stroke="url(#brainGradient)" stroke-width="1" opacity="0.3"/>
+</svg> 

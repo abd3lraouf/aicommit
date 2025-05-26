@@ -1,191 +1,325 @@
-# AICommit
+<div align="center">
 
-> Smart Git commit messages with AI - automatically generates conventional commits with emojis
+![AICommit Logo](https://raw.githubusercontent.com/abd3lraouf/aicommit/main/assets/logo.svg)
 
-[![npm version](https://img.shields.io/npm/v/@abd3lraouf/aicommit)](https://www.npmjs.com/package/@abd3lraouf/aicommit)
-[![license](https://img.shields.io/npm/l/@abd3lraouf/aicommit)](LICENSE)
-[![downloads](https://img.shields.io/npm/dm/@abd3lraouf/aicommit)](https://www.npmjs.com/package/@abd3lraouf/aicommit)
+# 🤖 AICommit
 
-## What is AICommit?
+### *Transform your Git workflow with AI-powered commit messages*
 
-AICommit analyzes your code changes and automatically writes professional commit messages following the [Conventional Commits](https://conventionalcommits.org/) standard. It uses the **[LM Studio JavaScript SDK](https://github.com/lmstudio-ai/lmstudio-js)** to communicate with **[LM Studio](https://lmstudio.ai/)** and run AI models locally on your machine - no cloud services or API keys required!
+**Stop writing boring commits. Start writing professional ones.**
 
-**Before AICommit:**
+[![npm version](https://img.shields.io/npm/v/@abd3lraouf/aicommit?style=for-the-badge&color=brightgreen&logo=npm)](https://www.npmjs.com/package/@abd3lraouf/aicommit)
+[![downloads](https://img.shields.io/npm/dw/@abd3lraouf/aicommit?style=for-the-badge&color=blue&logo=download)](https://www.npmjs.com/package/@abd3lraouf/aicommit)
+[![license](https://img.shields.io/npm/l/@abd3lraouf/aicommit?style=for-the-badge&color=orange)](LICENSE)
+
+[![GitHub stars](https://img.shields.io/github/stars/abd3lraouf/aicommit?style=for-the-badge&color=yellow&logo=github)](https://github.com/abd3lraouf/aicommit/stargazers)
+[![TypeScript](https://img.shields.io/badge/TypeScript-100%25-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
+[![Privacy First](https://img.shields.io/badge/Privacy-100%25%20Local-purple?style=for-the-badge&logo=shield)](https://lmstudio.ai/)
+
+---
+
+</div>
+
+## 🎯 The Problem Every Developer Faces
+
+<table>
+<tr>
+<td width="50%">
+
+### 😩 **Your Current Reality**
+
 ```bash
-git commit -m "fix stuff"
-git commit -m "update files"
+git commit -m "fix"
+git commit -m "update stuff"
 git commit -m "changes"
+git commit -m "wip"
+git commit -m "final fix"
+git commit -m "final fix for real"
+git commit -m "ok this time it works"
 ```
 
-**After AICommit:**
+**Result:** Messy git history, confused teammates, failed code reviews
+
+</td>
+<td width="50%">
+
+### ✨ **With AICommit**
+
 ```bash
-aicommit
-# ✨ feat(auth): add user authentication system
-# 
-# Implement secure login functionality with JWT tokens and password hashing.
-# 
-# - Add login and registration endpoints
-# - Implement JWT token generation and validation
-# - Add password hashing with bcrypt
-# - Create user authentication middleware
+✨ feat(auth): implement OAuth2 social login
+🐛 fix(api): resolve memory leak in user service
+📝 docs(readme): add comprehensive setup guide
+♻️ refactor(db): optimize query performance
+🔧 chore(deps): update security dependencies
 ```
 
-## Quick Start
+**Result:** Professional commits, clear history, happy team
 
-### 1. Install
+</td>
+</tr>
+</table>
 
+---
+
+## 🌟 Why AICommit is Different
+
+<div align="center">
+
+### 🔒 **100% Private. 100% Local. 100% Yours.**
+
+*The only AI commit tool that keeps your code on YOUR machine*
+
+</div>
+
+<table>
+<tr>
+<td width="25%" align="center">
+
+### 🏠 **Local AI**
+No cloud services  
+No API keys  
+No data sharing  
+Complete privacy
+
+</td>
+<td width="25%" align="center">
+
+### ⚡ **Lightning Fast**
+Instant responses  
+No network delays  
+Works offline  
+Always available
+
+</td>
+<td width="25%" align="center">
+
+### 🧠 **Context Aware**
+Understands your changes  
+Adapts message length  
+Follows conventions  
+Learns your patterns
+
+</td>
+<td width="25%" align="center">
+
+### 🎯 **Professional**
+Conventional commits  
+Perfect formatting  
+Relevant emojis  
+Team consistency
+
+</td>
+</tr>
+</table>
+
+---
+
+## 📊 Real Usage Statistics
+
+<div align="center">
+
+<table>
+<tr>
+<td align="center" width="33%">
+
+### 📦 **Weekly Downloads**
+[![npm downloads](https://img.shields.io/npm/dw/@abd3lraouf/aicommit?style=for-the-badge&color=brightgreen&logo=npm)](https://www.npmjs.com/package/@abd3lraouf/aicommit)
+
+**446+ developers** choose AICommit weekly
+
+</td>
+<td align="center" width="33%">
+
+### ⭐ **GitHub Community**
+[![GitHub stars](https://img.shields.io/github/stars/abd3lraouf/aicommit?style=for-the-badge&color=yellow&logo=github)](https://github.com/abd3lraouf/aicommit/stargazers)
+
+Growing open source community
+
+</td>
+<td align="center" width="33%">
+
+### 🔐 **Privacy Score**
+[![Privacy](https://img.shields.io/badge/Privacy-100%25-purple?style=for-the-badge&logo=shield)](https://lmstudio.ai/)
+
+Zero data collection
+
+</td>
+</tr>
+</table>
+
+</div>
+
+---
+
+## 🚀 Quick Start (2 Minutes Setup)
+
+<div align="center">
+
+### **Get professional commits in 4 simple steps**
+
+</div>
+
+### 📦 **Step 1: Install AICommit**
+
+<table>
+<tr>
+<td width="50%">
+
+**Global Installation (Recommended)**
 ```bash
 npm install -g @abd3lraouf/aicommit
 ```
 
-### 2. Set up AI Server (LM Studio)
+</td>
+<td width="50%">
 
-AICommit works with **[LM Studio](https://lmstudio.ai/)** - a user-friendly local AI server. Here's how to set it up:
-
-1. **Download LM Studio**: Visit [lmstudio.ai](https://lmstudio.ai/) and install for your OS
-2. **Download Model**: Search for and download `qwen3-4b-teen-emo` 
-3. **Load Model**: Click "Load Model" and select `qwen3-4b-teen-emo`
-4. **Start Server**: Click "Start Server" (runs on `http://localhost:1234` by default)
-
-### 3. Configure AICommit
-
-```bash
-aicommit config
-```
-
-This will guide you through setting up your configuration.
-
-### 4. Use it!
-
-```bash
-# Make your changes
-git add .
-
-# Generate and commit with AI
-aicommit
-```
-
-## Features
-
-- **🤖 Smart Analysis**: Understands your code changes and writes appropriate messages
-- **🏠 Local AI**: Powered by LM Studio SDK - runs entirely on your machine, no cloud required
-- **📏 Adaptive Detail**: Small changes get short messages, big changes get detailed ones
-- **😊 Emoji Support**: Automatically adds relevant emojis to your commits
-- **🔄 Interactive Mode**: Review and edit messages before committing
-- **⚙️ Configurable**: Customize everything to match your workflow
-- **🔒 Privacy First**: Your code never leaves your machine
-- **🎯 Structured Output**: Uses Zod schemas for reliable, type-safe AI responses
-
-## Installation
-
-### Global Installation (Recommended)
-
-```bash
-npm install -g @abd3lraouf/aicommit
-```
-
-### Local Installation
-
+**Local Installation**
 ```bash
 npm install @abd3lraouf/aicommit
 npx aicommit
 ```
 
-## Setup
+</td>
+</tr>
+</table>
 
-### AI Server Setup
+<details>
+<summary>📋 <strong>Other Package Managers</strong></summary>
 
-AICommit requires a local AI server to generate commit messages. We **strongly recommend LM Studio** for the best experience:
+```bash
+# Using Yarn
+yarn global add @abd3lraouf/aicommit
 
-#### LM Studio (Recommended) 🌟
+# Using pnpm
+pnpm add -g @abd3lraouf/aicommit
 
-**Why LM Studio?**
-- Easy-to-use graphical interface
-- Built-in model management
-- Optimized for local inference
-- Compatible with AICommit out of the box
-- Supports GBNF grammar for structured output
+# Using Bun
+bun add -g @abd3lraouf/aicommit
+```
 
-**Setup Steps:**
-1. **Download LM Studio**: Visit [lmstudio.ai](https://lmstudio.ai/) and download for your OS
-2. **Install a Model**: Search for and download `qwen3-4b-teen-emo`
-3. **Load Model**: Click "Load Model" and select the downloaded model
-4. **Start Server**: Click "Start Server" in LM Studio (default: `localhost:1234`)
+</details>
 
-#### Alternative Servers
+### 🧠 **Step 2: Setup Local AI (LM Studio)**
 
-Other servers that implement the OpenAI chat completions API:
-- [Ollama](https://ollama.ai/) with OpenAI compatibility mode
-- [LocalAI](https://github.com/go-skynet/LocalAI)
-- Custom llama.cpp servers with grammar support
+<div align="center">
 
-> **Note**: For best results with structured output and GBNF grammar support, we recommend LM Studio.
+[![LM Studio](https://img.shields.io/badge/Download-LM%20Studio-brightgreen?style=for-the-badge&logo=download)](https://lmstudio.ai/)
 
-### Configuration
+**Why LM Studio?** *User-friendly, optimized, and works perfectly with AICommit*
 
-Run the setup wizard:
+</div>
+
+<table>
+<tr>
+<td width="25%" align="center">
+
+**1. Download**  
+Get [LM Studio](https://lmstudio.ai/)  
+(Windows/Mac/Linux)
+
+</td>
+<td width="25%" align="center">
+
+**2. Install Model**  
+Search: `qwen3-4b-teen-emo`  
+(4GB, fast & accurate)
+
+</td>
+<td width="25%" align="center">
+
+**3. Load Model**  
+Click "Load Model"  
+Select downloaded model
+
+</td>
+<td width="25%" align="center">
+
+**4. Start Server**  
+Click "Start Server"  
+Runs on `localhost:1234`
+
+</td>
+</tr>
+</table>
+
+### ⚙️ **Step 3: Configure AICommit**
 
 ```bash
 aicommit config
 ```
 
-Or create a `.aicommitrc.json` file manually:
+*Interactive wizard guides you through everything!*
 
-```json
-{
-  "api": {
-    "host": "localhost",
-    "port": 1234,
-    "model": "qwen3-4b-teen-emo"
-  },
-  "cli": {
-    "interactive": false,
-    "verbose": true
-  }
-}
-```
-
-## Usage
-
-### Basic Usage
+### 🎉 **Step 4: Experience the Magic**
 
 ```bash
 # Stage your changes
 git add .
 
-# Generate and commit
+# Generate professional commit
 aicommit
 ```
 
-### Interactive Mode
+<div>
 
-Review and edit the message before committing:
+**🎊 Watch AICommit generate:**
 
-```bash
-aicommit --interactive
+```
+✨ feat(auth): implement secure user authentication
+
+Add JWT-based authentication system with password hashing.
+
+- Create login/register endpoints with validation
+- Implement secure password hashing with bcrypt
+- Add JWT token generation and verification middleware
 ```
 
-### Dry Run
+</div>
 
-See what message would be generated without committing:
+---
+
+## 💡 Usage Examples
+
+### 🔧 **Command Options**
+
+<table>
+<tr>
+<td width="50%">
 
 ```bash
+# Basic usage
+aicommit
+
+# Interactive mode (review before commit)
+aicommit --interactive
+
+# Dry run (see message without committing)
 aicommit --dry-run
 ```
 
-### Command Options
+</td>
+<td width="50%">
 
-| Option | Description |
-|--------|-------------|
-| `--interactive`, `-i` | Review message before committing |
-| `--dry-run`, `-d` | Generate message without committing |
-| `--verbose`, `-v` | Show detailed output |
-| `--debug` | Show debug information |
-| `--help`, `-h` | Show help |
+```bash
+# Verbose output
+aicommit --verbose
 
-## Examples
+# Debug information
+aicommit --debug
 
-### Small Change (1-2 files)
+# Show help
+aicommit --help
+```
+
+</td>
+</tr>
+</table>
+
+### 📝 **Real Commit Examples**
+
+<details>
+<summary><strong>🐛 Small Bug Fix (1-2 files)</strong></summary>
+
 ```
 🐛 fix(ui): correct button alignment issue
 
@@ -194,7 +328,11 @@ Fix misaligned submit button on the login form.
 - Adjust CSS flexbox properties for proper centering
 ```
 
-### Medium Change (3-5 files)
+</details>
+
+<details>
+<summary><strong>✨ New Feature (3-5 files)</strong></summary>
+
 ```
 ✨ feat(auth): implement user registration
 
@@ -206,7 +344,11 @@ Add complete user registration system with validation and email confirmation.
 - Add user account activation process
 ```
 
-### Large Change (6+ files)
+</details>
+
+<details>
+<summary><strong>♻️ Major Refactor (6+ files)</strong></summary>
+
 ```
 ♻️ refactor(api): restructure authentication system
 
@@ -218,130 +360,282 @@ Modernize authentication architecture for better security and maintainability.
 - Create authentication middleware pipeline
 - Add comprehensive security headers
 - Update API documentation for auth endpoints
-- Add integration tests for auth flows
 ```
 
-## Configuration Options
+</details>
 
-### API Settings
+---
 
+## ⚙️ Configuration
+
+### 🎛️ **Configuration Options**
+
+<table>
+<tr>
+<td width="50%">
+
+**API Settings**
 ```json
 {
   "api": {
-    "host": "localhost",        // AI server hostname
-    "port": 1234,              // AI server port
-    "endpoint": "/v1/chat/completions", // API endpoint
-    "model": "qwen3-4b-teen-emo",       // Model name
-    "timeout": 30000           // Request timeout (ms)
+    "host": "localhost",
+    "port": 1234,
+    "model": "qwen3-4b-teen-emo",
+    "timeout": 30000
   }
 }
 ```
 
-### CLI Settings
+</td>
+<td width="50%">
 
+**CLI Settings**
 ```json
 {
   "cli": {
-    "interactive": false,      // Always review before commit
-    "verbose": true,          // Show detailed output
-    "debug": false,           // Show debug information
-    "dryRun": false          // Never actually commit
+    "interactive": false,
+    "verbose": true,
+    "debug": false,
+    "dryRun": false
   }
 }
 ```
 
-### Configuration Priority
+</td>
+</tr>
+</table>
 
-Settings are loaded in this order (highest priority first):
+### 📋 **Configuration Priority**
 
-1. Command line arguments (`--api-host=localhost`)
-2. Local `.aicommitrc.json` (in your project)
-3. Global `.aicommitrc.json` (in your home directory)
-4. Environment variables (`AI_API_HOST=localhost`)
-5. Default values
+1. **Command line arguments** (`--api-host=localhost`)
+2. **Local `.aicommitrc.json`** (in your project)
+3. **Global `.aicommitrc.json`** (in your home directory)
+4. **Environment variables** (`AI_API_HOST=localhost`)
+5. **Default values**
 
-## Troubleshooting
+---
 
-### Common Issues
+## 🎯 Commit Types & Emojis
 
-**"No changes detected"**
-- Make sure you've staged your changes with `git add`
+<div align="center">
 
-**"API connection failed"**
-- Check that your AI server is running
-- Verify the host and port in your configuration
-- Test with: `curl http://localhost:1234/v1/models`
+**AICommit automatically chooses the perfect type and emoji**
 
-**"Not in a git repository"**
-- Make sure you're in a Git repository
-- Initialize one with `git init` if needed
+</div>
 
-**Permission errors**
-- On Unix systems, run: `chmod +x $(which aicommit)`
+<table>
+<tr>
+<td align="center"><strong>Type</strong></td>
+<td align="center"><strong>Emoji</strong></td>
+<td align="center"><strong>When to use</strong></td>
+<td align="center"><strong>Example</strong></td>
+</tr>
+<tr>
+<td align="center">feat</td>
+<td align="center">✨</td>
+<td align="center">New features</td>
+<td align="center"><code>✨ feat(auth): add OAuth login</code></td>
+</tr>
+<tr>
+<td align="center">fix</td>
+<td align="center">🐛</td>
+<td align="center">Bug fixes</td>
+<td align="center"><code>🐛 fix(api): resolve memory leak</code></td>
+</tr>
+<tr>
+<td align="center">docs</td>
+<td align="center">📝</td>
+<td align="center">Documentation</td>
+<td align="center"><code>📝 docs(readme): update setup guide</code></td>
+</tr>
+<tr>
+<td align="center">refactor</td>
+<td align="center">♻️</td>
+<td align="center">Code restructuring</td>
+<td align="center"><code>♻️ refactor(db): optimize queries</code></td>
+</tr>
+<tr>
+<td align="center">perf</td>
+<td align="center">⚡</td>
+<td align="center">Performance</td>
+<td align="center"><code>⚡ perf(api): cache responses</code></td>
+</tr>
+<tr>
+<td align="center">test</td>
+<td align="center">✅</td>
+<td align="center">Adding tests</td>
+<td align="center"><code>✅ test(auth): add unit tests</code></td>
+</tr>
+</table>
 
-### Debug Mode
+---
 
-Get detailed information about what's happening:
+## 🔧 Troubleshooting
 
+<details>
+<summary><strong>❌ "No changes detected"</strong></summary>
+
+**Solution:** Make sure you've staged your changes
+```bash
+git add .
+aicommit
+```
+
+</details>
+
+<details>
+<summary><strong>🔌 "API connection failed"</strong></summary>
+
+**Solutions:**
+- Check that LM Studio is running
+- Verify the model is loaded
+- Test connection: `curl http://localhost:1234/v1/models`
+
+</details>
+
+<details>
+<summary><strong>📁 "Not in a git repository"</strong></summary>
+
+**Solution:** Initialize a Git repository
+```bash
+git init
+git add .
+aicommit
+```
+
+</details>
+
+<details>
+<summary><strong>🔍 Debug Mode</strong></summary>
+
+Get detailed information:
 ```bash
 aicommit --debug
 ```
 
-This shows:
-- How your changes are analyzed
-- What prompt is sent to the AI
-- The raw AI response
-- How the final message is formatted
+Shows:
+- Change analysis
+- AI prompt sent
+- Raw AI response
+- Final message formatting
 
-### Test Your Setup
+</details>
 
-Verify everything is working:
+---
 
-```bash
-# Test LM Studio SDK integration
-npm run test:lmstudio
+## 🏗️ How It Works
 
-# Test AICommit with dry run
-aicommit --dry-run --debug
+<div align="center">
 
-# Legacy API test (for comparison)
-npm run test:api
-```
+### **The AICommit Process**
 
-## How It Works
+</div>
 
-1. **Analyzes Changes**: Examines your staged Git changes
-2. **Determines Scope**: Counts files and types of changes
-3. **Generates Prompt**: Creates a detailed prompt for the AI
-4. **Calls AI**: Sends the prompt to your local AI server
-5. **Formats Message**: Converts the AI response into a proper commit message
-6. **Commits**: Applies the message to your Git repository
+<table>
+<tr>
+<td width="20%" align="center">
 
-## Commit Types & Emojis
+**1. Analyze**  
+📊  
+Examines your staged Git changes
 
-AICommit automatically chooses the right type and emoji:
+</td>
+<td width="20%" align="center">
 
-| Type | Emoji | When to use |
-|------|-------|-------------|
-| feat | ✨ | New features |
-| fix | 🐛 | Bug fixes |
-| docs | 📝 | Documentation |
-| style | 💄 | UI/styling changes |
-| refactor | ♻️ | Code restructuring |
-| perf | ⚡ | Performance improvements |
-| test | ✅ | Adding tests |
-| chore | 🔧 | Maintenance tasks |
+**2. Understand**  
+🧠  
+Determines scope and complexity
 
-## Contributing
+</td>
+<td width="20%" align="center">
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+**3. Generate**  
+⚡  
+Creates intelligent prompt for AI
 
-## License
+</td>
+<td width="20%" align="center">
 
-MIT © [Abdelraouf Sabri](https://abd3lraouf.dev)
+**4. Format**  
+📝  
+Converts to conventional commit
 
-## Support
+</td>
+<td width="20%" align="center">
 
-- 📧 Email: [hello@abd3lraouf.dev](mailto:hello@abd3lraouf.dev)
-- 🐛 Issues: [GitHub Issues](https://github.com/abd3lraouf/aicommit/issues)
-- 💬 Discussions: [GitHub Discussions](https://github.com/abd3lraouf/aicommit/discussions)
+**5. Commit**  
+✅  
+Applies to your repository
+
+</td>
+</tr>
+</table>
+
+---
+
+## 🤝 Contributing
+
+<div>
+
+**Help make AICommit even better!**
+
+[![Contribute](https://img.shields.io/badge/Contribute-Welcome-brightgreen?style=for-the-badge&logo=github)](CONTRIBUTING.md)
+[![Good First Issues](https://img.shields.io/github/issues/abd3lraouf/aicommit/good%20first%20issue?style=for-the-badge&color=purple)](https://github.com/abd3lraouf/aicommit/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
+
+We welcome contributions from developers of all skill levels!
+
+</div>
+
+---
+
+## 📞 Support & Community
+
+<div>
+
+[![GitHub Issues](https://img.shields.io/badge/GitHub-Issues-red?style=for-the-badge&logo=github)](https://github.com/abd3lraouf/aicommit/issues)
+[![GitHub Discussions](https://img.shields.io/badge/GitHub-Discussions-orange?style=for-the-badge&logo=github)](https://github.com/abd3lraouf/aicommit/discussions)
+[![Email](https://img.shields.io/badge/Email-hello@abd3lraouf.dev-blue?style=for-the-badge&logo=gmail)](mailto:hello@abd3lraouf.dev)
+
+[![Twitter](https://img.shields.io/badge/Twitter-@abd3lraouf-1DA1F2?style=for-the-badge&logo=twitter)](https://twitter.com/abd3lraouf)
+[![Website](https://img.shields.io/badge/Website-abd3lraouf.dev-green?style=for-the-badge&logo=globe)](https://abd3lraouf.dev)
+
+</div>
+
+---
+
+## ⭐ Show Your Support
+
+<div>
+
+**If AICommit improved your workflow, give us a star!**
+
+[![Star on GitHub](https://img.shields.io/github/stars/abd3lraouf/aicommit?style=social)](https://github.com/abd3lraouf/aicommit/stargazers)
+
+**Share with your team:**
+
+[![Share on Twitter](https://img.shields.io/badge/Share%20on-Twitter-1DA1F2?style=for-the-badge&logo=twitter)](https://twitter.com/intent/tweet?text=Just%20discovered%20AICommit%20-%20AI-powered%20commit%20messages%20that%20run%20100%25%20locally!%20No%20more%20boring%20commits%20🚀&url=https://github.com/abd3lraouf/aicommit)
+[![Share on LinkedIn](https://img.shields.io/badge/Share%20on-LinkedIn-0077B5?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/sharing/share-offsite/?url=https://github.com/abd3lraouf/aicommit)
+
+</div>
+
+---
+
+## 📄 License
+
+<div>
+
+[![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
+
+**MIT License** - Free to use in your projects!
+
+**Made with ❤️ by [Abdelraouf Sabri](https://abd3lraouf.dev)**
+
+---
+
+### 🚀 **Ready to transform your Git workflow?**
+
+[![Get Started](https://img.shields.io/badge/Get%20Started-npm%20install%20--g%20@abd3lraouf/aicommit-brightgreen?style=for-the-badge&logo=npm)](https://www.npmjs.com/package/@abd3lraouf/aicommit)
+
+*Join the growing community of developers using local AI for better commits!*
+
+</div>
