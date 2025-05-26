@@ -1,372 +1,329 @@
 # AICommit
 
-A smart Git commit message generator that creates conventional commit messages with emojis.
+> Smart Git commit messages with AI - automatically generates conventional commits with emojis
 
-![npm version](https://img.shields.io/npm/v/@abd3lraouf/aicommit)
-![license](https://img.shields.io/npm/l/@abd3lraouf/aicommit)
-![downloads](https://img.shields.io/npm/dm/@abd3lraouf/aicommit)
+[![npm version](https://img.shields.io/npm/v/@abd3lraouf/aicommit)](https://www.npmjs.com/package/@abd3lraouf/aicommit)
+[![license](https://img.shields.io/npm/l/@abd3lraouf/aicommit)](LICENSE)
+[![downloads](https://img.shields.io/npm/dm/@abd3lraouf/aicommit)](https://www.npmjs.com/package/@abd3lraouf/aicommit)
 
-## Overview
+## What is AICommit?
 
-AICommit analyzes your Git changes to automatically generate high-quality conventional commit messages. It follows best practices, adds appropriate emojis based on commit type, and streamlines your Git workflow.
+AICommit analyzes your code changes and automatically writes professional commit messages following the [Conventional Commits](https://conventionalcommits.org/) standard. No more struggling to write good commit messages!
 
-> **Note**: This package is published under the scoped name `@abd3lraouf/aicommit` on npm.
+**Before AICommit:**
+```bash
+git commit -m "fix stuff"
+git commit -m "update files"
+git commit -m "changes"
+```
 
-## Prerequisites
+**After AICommit:**
+```bash
+aicommit
+# ✨ feat(auth): add user authentication system
+# 
+# Implement secure login functionality with JWT tokens and password hashing.
+# 
+# - Add login and registration endpoints
+# - Implement JWT token generation and validation
+# - Add password hashing with bcrypt
+# - Create user authentication middleware
+```
 
-- Node.js (v18 or higher)
-- Git
+## Quick Start
+
+### 1. Install
+
+```bash
+npm install -g @abd3lraouf/aicommit
+```
+
+### 2. Set up AI Server
+
+You'll need a local AI server running. We recommend [LM Studio](https://lmstudio.ai/) with the `qwen3-4b-teen-emo` model:
+
+1. Download and install LM Studio
+2. Load the `qwen3-4b-teen-emo` model
+3. Start the local server (usually runs on `http://localhost:1234`)
+
+### 3. Configure AICommit
+
+```bash
+aicommit config
+```
+
+This will guide you through setting up your configuration.
+
+### 4. Use it!
+
+```bash
+# Make your changes
+git add .
+
+# Generate and commit with AI
+aicommit
+```
+
+## Features
+
+- **🤖 Smart Analysis**: Understands your code changes and writes appropriate messages
+- **📏 Adaptive Detail**: Small changes get short messages, big changes get detailed ones
+- **😊 Emoji Support**: Automatically adds relevant emojis to your commits
+- **🔄 Interactive Mode**: Review and edit messages before committing
+- **⚙️ Configurable**: Customize everything to match your workflow
 
 ## Installation
 
-Install globally using npm:
-
-```bash
-npm install -g @abd3lraouf/aicommit
-```
-
-Or using pnpm:
-
-```bash
-pnpm add -g @abd3lraouf/aicommit
-```
-
-## API Server Setup
-
-This tool requires a compatible AI API server to generate commit messages. See [API Server Setup](AI_SERVER_SETUP.md) for detailed instructions.
-
-## Configuration
-
-There are three ways to configure AICommit:
-
-### 1. Interactive Configuration Setup
-
-Run the interactive configuration wizard:
-
-```bash
-# Using globally installed aicommit
-aicommit config
-
-# Or using the dedicated config tool
-aicommit-config
-```
-
-This wizard will guide you through setting up your configuration and save it either globally (in your home directory) or locally (in your project).
-
-### 2. Configuration File
-
-Create a `.aicommitrc.json` file in your home directory (`~/.aicommitrc.json`) or project root with your preferred settings:
-
-```json
-{
-  "api": {
-    "host": "localhost",
-    "port": 1234,
-    "endpoint": "/v1/chat/completions",
-    "model": "Qwen/Qwen3-4B",
-    "timeout": 30000
-  },
-  "cli": {
-    "dryRun": false,
-    "interactive": false,
-    "verbose": true,
-    "debug": false
-  }
-}
-```
-
-### 3. Command Line Options
-
-Override configuration settings using command-line arguments:
-
-```bash
-aicommit --api-host=localhost --api-port=1234 --interactive
-```
-
-Configuration is loaded in the following order of precedence (highest to lowest):
-1. Command line arguments
-2. Local project `.aicommitrc.json` 
-3. Home directory `.aicommitrc.json`
-4. Environment variables
-5. Default values
-
 ### Global Installation (Recommended)
 
-Install globally to use `aicommit` as a command from anywhere:
-
 ```bash
 npm install -g @abd3lraouf/aicommit
-# or 
-pnpm install -g @abd3lraouf/aicommit
-# or
-yarn global add @abd3lraouf/aicommit
 ```
 
 ### Local Installation
 
 ```bash
 npm install @abd3lraouf/aicommit
-# or
-pnpm install @abd3lraouf/aicommit
-# or
-yarn add @abd3lraouf/aicommit
+npx aicommit
 ```
 
-### Verifying Installation
+## Setup
 
-After installation, verify that the command is available:
+### AI Server Setup
+
+AICommit needs a local AI server to generate commit messages. Here's the easiest way:
+
+#### Option 1: LM Studio (Recommended)
+
+1. **Download LM Studio**: Visit [lmstudio.ai](https://lmstudio.ai/) and download for your OS
+2. **Install a Model**: Search for and download `qwen3-4b-teen-emo`
+3. **Start Server**: Click "Start Server" in LM Studio (default: `localhost:1234`)
+
+#### Option 2: Other Compatible Servers
+
+Any server that implements the OpenAI chat completions API will work:
+- [Ollama](https://ollama.ai/) with OpenAI compatibility
+- [LocalAI](https://github.com/go-skynet/LocalAI)
+- Custom implementations
+
+### Configuration
+
+Run the setup wizard:
 
 ```bash
-aicommit --help
+aicommit config
 ```
 
-This should display the available command options. If you encounter any issues, ensure that:
+Or create a `.aicommitrc.json` file manually:
 
-1. Node.js binaries are in your PATH
-2. Global npm/pnpm/yarn packages are properly linked
+```json
+{
+  "api": {
+    "host": "localhost",
+    "port": 1234,
+    "model": "qwen3-4b-teen-emo"
+  },
+  "cli": {
+    "interactive": false,
+    "verbose": true
+  }
+}
+```
 
 ## Usage
 
 ### Basic Usage
 
 ```bash
-# If installed globally
-aicommit
+# Stage your changes
+git add .
 
-# If installed locally
-npx aicommit
+# Generate and commit
+aicommit
+```
+
+### Interactive Mode
+
+Review and edit the message before committing:
+
+```bash
+aicommit --interactive
+```
+
+### Dry Run
+
+See what message would be generated without committing:
+
+```bash
+aicommit --dry-run
 ```
 
 ### Command Options
 
-- `--dry-run` (`-d`): Generate a commit message without actually committing changes
-- `--interactive` (`-i`): Enable interactive mode to edit the commit message before committing
-- `--verbose` (`-v`): Enable detailed output with styled messages and emojis (default: true)
-- `--debug`: Enable debug logging for troubleshooting message extraction issues
-- `--help` (`-h`): Show help information
+| Option | Description |
+|--------|-------------|
+| `--interactive`, `-i` | Review message before committing |
+| `--dry-run`, `-d` | Generate message without committing |
+| `--verbose`, `-v` | Show detailed output |
+| `--debug` | Show debug information |
+| `--help`, `-h` | Show help |
 
-#### API Configuration Options
+## Examples
 
-- `--api-host`: Set the API server hostname (overrides configuration files)
-- `--api-port`: Set the API server port number
-- `--api-endpoint`: Set the API endpoint path
-- `--api-model`: Set the AI model name to use
-- `--api-timeout`: Set the API request timeout in milliseconds
-
-### Examples
-
-```bash
-# Interactive mode with confirmation before committing
-aicommit --interactive
-
-# Generate message only without committing (dry run)
-aicommit --dry-run
-
-# Disable verbose output (minimal output mode)
-aicommit --no-verbose
-
-# Enable debug mode for troubleshooting
-aicommit --debug
+### Small Change (1-2 files)
 ```
+🐛 fix(ui): correct button alignment issue
+
+Fix misaligned submit button on the login form.
+
+- Adjust CSS flexbox properties for proper centering
+```
+
+### Medium Change (3-5 files)
+```
+✨ feat(auth): implement user registration
+
+Add complete user registration system with validation and email confirmation.
+
+- Create registration form with input validation
+- Add email confirmation workflow
+- Implement password strength requirements
+- Add user account activation process
+```
+
+### Large Change (6+ files)
+```
+♻️ refactor(api): restructure authentication system
+
+Modernize authentication architecture for better security and maintainability.
+
+- Replace JWT with session-based authentication
+- Add OAuth2 integration for social login
+- Implement role-based access control (RBAC)
+- Create authentication middleware pipeline
+- Add comprehensive security headers
+- Update API documentation for auth endpoints
+- Add integration tests for auth flows
+```
+
+## Configuration Options
+
+### API Settings
+
+```json
+{
+  "api": {
+    "host": "localhost",        // AI server hostname
+    "port": 1234,              // AI server port
+    "endpoint": "/v1/chat/completions", // API endpoint
+    "model": "qwen3-4b-teen-emo",       // Model name
+    "timeout": 30000           // Request timeout (ms)
+  }
+}
+```
+
+### CLI Settings
+
+```json
+{
+  "cli": {
+    "interactive": false,      // Always review before commit
+    "verbose": true,          // Show detailed output
+    "debug": false,           // Show debug information
+    "dryRun": false          // Never actually commit
+  }
+}
+```
+
+### Configuration Priority
+
+Settings are loaded in this order (highest priority first):
+
+1. Command line arguments (`--api-host=localhost`)
+2. Local `.aicommitrc.json` (in your project)
+3. Global `.aicommitrc.json` (in your home directory)
+4. Environment variables (`AI_API_HOST=localhost`)
+5. Default values
+
+## Troubleshooting
+
+### Common Issues
+
+**"No changes detected"**
+- Make sure you've staged your changes with `git add`
+
+**"API connection failed"**
+- Check that your AI server is running
+- Verify the host and port in your configuration
+- Test with: `curl http://localhost:1234/v1/models`
+
+**"Not in a git repository"**
+- Make sure you're in a Git repository
+- Initialize one with `git init` if needed
+
+**Permission errors**
+- On Unix systems, run: `chmod +x $(which aicommit)`
 
 ### Debug Mode
 
-Debug mode provides detailed logging to help troubleshoot issues and gain insights into how AICommit works.
-
-To enable debug mode, use the `--debug` flag or set `debug: true` in your configuration file:
+Get detailed information about what's happening:
 
 ```bash
 aicommit --debug
 ```
 
-#### Token Counting
+This shows:
+- How your changes are analyzed
+- What prompt is sent to the AI
+- The raw AI response
+- How the final message is formatted
 
-When running AICommit in debug mode, it will display token count information for API requests:
+### Test Your Setup
 
-- **Estimated Token Count**: Before making the API request, AICommit estimates how many tokens will be used for the system prompt and user input.
-- **Actual Token Usage**: After receiving the API response, AICommit displays the actual token usage reported by the API.
+Verify everything is working:
 
-Example output:
+```bash
+# Test API connection
+curl http://localhost:1234/v1/models
+
+# Test AICommit with dry run
+aicommit --dry-run --debug
 ```
-→ [DefaultAI] Estimated token count: { system_prompt: 1243, user_prompt: 156, total: 1399 }
-→ [DefaultAI] Token usage: { prompt_tokens: 1412, completion_tokens: 312, total_tokens: 1724 }
-```
-
-This feature is useful for:
-- Monitoring token usage for API billing purposes
-- Debugging API context limitations
-- Optimizing prompts to reduce token usage
-
-## Features
-
-- Analyzes Git changes (staged, unstaged, and untracked files)
-- Generates conventional commit messages based on file changes
-- Automatically adds appropriate emojis based on commit type
-- Follows the Conventional Commits specification
-- Interactive mode for reviewing and editing messages
-- Intelligently handles staged/unstaged changes
-- Beautiful, colored terminal output with progress indicators
-- Verbose mode with detailed, stylized process information
-- Enhanced with clean architecture for maintainability and extensibility
-
-## Commit Type Emojis
-
-The tool automatically adds emojis based on commit types:
-
-| Type     | Emoji | Description                |
-|----------|-------|----------------------------|
-| feat     | ✨    | A new feature              |
-| fix      | 🐛    | A bug fix                  |
-| docs     | 📝    | Documentation changes      |
-| style    | 💄    | Style/UI changes           |
-| refactor | ♻️    | Code refactoring           |
-| perf     | ⚡️    | Performance improvements   |
-| test     | ✅    | Adding or updating tests   |
-| chore    | 🔧    | Maintenance tasks          |
-| ci       | 👷    | CI/CD changes              |
-| build    | 🏗️    | Build system changes       |
-| revert   | ⏪    | Revert changes             |
-| merge    | 🔀    | Merge branches             |
-| deps     | 📦    | Dependency updates         |
-| breaking | 💥    | Breaking changes           |
-| security | 🔒    | Security improvements      |
-| config   | 🔧    | Configuration changes      |
-| i18n     | 🌐    | Internationalization       |
-| release  | 🚀    | Release new version        |
-| db       | 🗃️    | Database related changes   |
-| a11y     | ♿    | Accessibility improvements |
-| ux       | 🎨    | User experience changes    |
-| init     | 🎉    | Initial commit             |
-
-## Architecture
-
-AICommit is built using clean architecture principles for better maintainability and extensibility:
-
-### Core Layer
-- **Entities**: Contains domain models like GitStatus and FileChanges
-- **Use Cases**: Implements application business rules:
-  - `GenerateCommitMessageUseCase`: Handles the process of generating commit messages
-  - `CommitChangesUseCase`: Handles the actual commit process
-- **Repository Interfaces**: Defines contracts for external services:
-  - `GitRepository`: Interface for Git operations
-  - `AIRepository`: Interface for AI service operations
-
-### Frameworks Layer
-- **Git Implementation**: Implements GitRepository using Node.js child_process
-- **Default AI Implementation**: Implements AIRepository with local text generation
-- **CLI Interface**: Handles command-line interactions and user prompts
-
-### App Layer
-- Orchestrates the flow between use cases and repositories
-- Handles dependency injection and initialization
-- Manages application lifecycle
-
-This architecture makes it easy to:
-- Replace the AI implementation with another service if needed
-- Add new features without changing existing code
-- Test components in isolation
-- Maintain clear separation of concerns
 
 ## How It Works
 
-1. AICommit captures your current git status (staged, unstaged, and untracked files)
-2. It analyzes the changes to generate a best practice commit message
-3. The generated message is formatted following conventional commit standards
-4. The message is enhanced with appropriate emojis based on commit type
-5. In interactive mode, you can edit the message before committing
-6. The changes are committed with the generated/edited message
+1. **Analyzes Changes**: Examines your staged Git changes
+2. **Determines Scope**: Counts files and types of changes
+3. **Generates Prompt**: Creates a detailed prompt for the AI
+4. **Calls AI**: Sends the prompt to your local AI server
+5. **Formats Message**: Converts the AI response into a proper commit message
+6. **Commits**: Applies the message to your Git repository
 
-### Commit Message Generation
+## Commit Types & Emojis
 
-AICommit uses a multi-layered approach to generate high-quality commit messages:
+AICommit automatically chooses the right type and emoji:
 
-1. **Change analysis**: Examines Git diffs to understand what was modified
-2. **Conventional commit formatting**: Creates structured messages following "type(scope): description" format
-3. **Emoji enhancement**: Adds appropriate emojis based on the commit type
-4. **Message validation**: Ensures the generated message follows conventional commit standards
-
-This robust approach ensures reliable, clean commit messages that follow best practices.
-
-## File Permissions (Unix/Linux/macOS)
-
-If you're using a Unix-like system and installed globally, you might need to ensure the executable has the right permissions:
-
-```bash
-# If encountering permission issues
-chmod +x $(which aicommit)
-```
-
-## API-Based Commit Message Generation
-
-AICommit uses a local JSON API server for commit message generation. This allows you to:
-
-1. Use your preferred LLM model for generating commit messages
-2. Get consistent, well-formatted commit messages with conventional format and emojis
-3. Customize the model and API parameters via environment variables
-
-### Required AI Model
-
-We recommend using the **[Qwen/Qwen3-4B](https://huggingface.co/Qwen/Qwen3-4B)** model from Hugging Face, which has been tested with our system and works well with the required JSON output format.
-
-For details about server setup and model requirements, see:
-- [AI_SERVER_SETUP.md](./AI_SERVER_SETUP.md) - Detailed server setup instructions and JSON schema
-
-### Configuration
-
-AICommit uses a `.env` file for configuration. The project now includes a pre-configured `.env` file with the following default settings:
-
-```
-AI_API_HOST=localhost  # The host where your AI API server is running
-AI_API_PORT=1234       # The port your AI API server is listening on
-AI_API_MODEL=Qwen/Qwen3-4B # The model name to use
-```
-
-You can modify these settings by editing the `.env` file directly:
-
-```bash
-# Edit the .env file to match your server configuration
-nano .env
-```
-
-If you need to reset to the default configuration:
-
-```bash
-# Reset to the default configuration
-npm run setup
-```
-
-Then edit the `.env` file to match your AI server configuration:
-
-```
-AI_API_HOST=localhost
-AI_API_PORT=1234
-AI_API_ENDPOINT=/v1/chat/completions
-AI_API_MODEL=Qwen/Qwen3-4B
-AI_API_TIMEOUT=30000
-```
-
-### Testing Your API Setup
-
-You can test your API configuration with the provided test script:
-
-```bash
-node scripts/test-api.js
-```
-
-This will send a sample git diff to your API and display the generated commit message.
+| Type | Emoji | When to use |
+|------|-------|-------------|
+| feat | ✨ | New features |
+| fix | 🐛 | Bug fixes |
+| docs | 📝 | Documentation |
+| style | 💄 | UI/styling changes |
+| refactor | ♻️ | Code restructuring |
+| perf | ⚡ | Performance improvements |
+| test | ✅ | Adding tests |
+| chore | 🔧 | Maintenance tasks |
 
 ## Contributing
 
-Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
 
 ## License
 
-MIT
+MIT © [Abdelraouf Sabri](https://abd3lraouf.dev)
 
-## Author
+## Support
 
-Abdelraouf Sabri
-- Email: hello@abd3lraouf.dev
-- Website: https://abd3lraouf.dev
-- Repository: https://github.com/abd3lraouf/aicommit
-- NPM Package: https://www.npmjs.com/package/@abd3lraouf/aicommit
+- 📧 Email: [hello@abd3lraouf.dev](mailto:hello@abd3lraouf.dev)
+- 🐛 Issues: [GitHub Issues](https://github.com/abd3lraouf/aicommit/issues)
+- 💬 Discussions: [GitHub Discussions](https://github.com/abd3lraouf/aicommit/discussions)
