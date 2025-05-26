@@ -1,7 +1,7 @@
 {
   "name": "@abd3lraouf/aicommit",
   "version": "2.0.5",
-  "description": "Git Commit Script - Generate smart commit messages with emojis",
+  "description": "Smart Git commit messages with AI - automatically generates conventional commits with emojis",
   "main": "dist/index.js",
   "bin": {
     "aicommit": "dist/cli.js",
@@ -20,8 +20,7 @@
     "README.md",
     "LICENSE",
     ".env.example",
-    ".aicommitrc.json",
-    "AI_SERVER_SETUP.md"
+    ".aicommitrc.json"
   ],
   "scripts": {
     "clean": "rm -rf dist",
@@ -30,8 +29,8 @@
     "postbuild": "sed -i.bak '1d' dist/cli.js && echo '#!/usr/bin/env node' | cat - dist/cli.js > dist/cli.js.tmp && mv dist/cli.js.tmp dist/cli.js && sed -i.bak '1d' dist/index.js && echo '#!/usr/bin/env node' | cat - dist/index.js > dist/index.js.tmp && mv dist/index.js.tmp dist/index.js && rm dist/*.bak",
     "start": "node --es-module-specifier-resolution=node dist/index.js",
     "dev": "tsc --watch",
-    "prepare": "pnpm run build && node scripts/setup/postinstall.mjs || exit 0",
-    "prepublishOnly": "pnpm run build",
+    "prepare": "npm run build && node scripts/setup/postinstall.mjs || exit 0",
+    "prepublishOnly": "npm run build",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest --config jest.config.mjs",
     "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --config jest.config.mjs --watch",
     "test:api": "node scripts/utils/test-api.mjs",

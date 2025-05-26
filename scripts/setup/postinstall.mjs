@@ -46,34 +46,38 @@ async function importModules() {
 }
 
 async function main() {
+  // Check if we're in a CI environment or if output should be suppressed
+  const isCI = process.env.CI === 'true' || process.env.NODE_ENV === 'test';
+  const isSilent = process.env.npm_config_loglevel === 'silent' || process.argv.includes('--silent');
+  
+  // Skip output in CI or silent mode
+  if (isCI || isSilent) {
+    return;
+  }
+
+  // Add a small delay to ensure output is visible after pnpm build approval
+  if (process.env.npm_config_user_agent?.includes('pnpm')) {
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
+
   const hasModules = await importModules();
 
   if (hasModules) {
     // Display formatted welcome message with chalk and boxen
     const message = `
-${chalk.bold('Thank you for installing AICommit!')}
+${chalk.bold('🎉 AICommit installed successfully!')}
 
-${chalk.yellow('Important:')} AICommit requires a local API server running with the ${chalk.green('Qwen/Qwen3-4B')} model.
+${chalk.yellow('⚠️  Setup Required:')} You need a local AI server with the ${chalk.green('qwen3-4b-teen-emo')} model.
 
-${chalk.bold('Default Configuration:')}
-API Server: ${chalk.cyan('http://localhost:1234/v1/chat/completions')}
+${chalk.bold('🚀 Quick Start:')}
+1. Install LM Studio: ${chalk.cyan('https://lmstudio.ai')}
+2. Load model: ${chalk.green('qwen3-4b-teen-emo')}
+3. Start server: ${chalk.cyan('http://localhost:1234')}
+4. Run: ${chalk.cyan('aicommit config')} to configure
+5. Use: ${chalk.cyan('aicommit')} in any git repository
 
-To customize your configuration:
-
-1. Create a ${chalk.cyan('.aicommitrc.json')} file in your project directory
-   or home directory with your preferred settings
-
-2. Use command-line options to override configuration:
-   ${chalk.cyan('$ aicommit --api-host=localhost --api-port=1234')}
-
-3. Edit the .env file for environment variables:
-   ${chalk.cyan('$ nano .env')}
-
-For server setup instructions see:
-${chalk.cyan('AI_SERVER_SETUP.md')}
-
-For complete documentation, visit:
-${chalk.blue('https://github.com/abd3lraouf/aicommit#readme')}
+${chalk.bold('📖 Documentation:')}
+${chalk.cyan('https://github.com/abd3lraouf/aicommit#readme')}
 `;
 
     console.log(boxen(message, {
@@ -85,20 +89,18 @@ ${chalk.blue('https://github.com/abd3lraouf/aicommit#readme')}
   } else {
     // Plain text fallback without chalk/boxen
     console.log(`
-Thank you for installing AICommit!
+🎉 AICommit installed successfully!
 
-Important: AICommit requires a local API server running with the Qwen/Qwen3-4B model.
+⚠️  Setup Required: You need a local AI server with the qwen3-4b-teen-emo model.
 
-Default Configuration:
-API Server: http://localhost:1234/v1/chat/completions
+🚀 Quick Start:
+1. Install LM Studio: https://lmstudio.ai
+2. Load model: qwen3-4b-teen-emo
+3. Start server: http://localhost:1234
+4. Run: aicommit config
+5. Use: aicommit in any git repository
 
-To customize your configuration:
-1. Create a .aicommitrc.json file in your project directory or home directory
-2. Use command-line options to override configuration
-3. Edit the .env file for environment variables
-
-For server setup instructions see: AI_SERVER_SETUP.md
-For complete documentation, visit: https://github.com/abd3lraouf/aicommit#readme
+📖 Documentation: https://github.com/abd3lraouf/aicommit#readme
 `);
   }
 }
