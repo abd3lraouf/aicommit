@@ -111,27 +111,28 @@ function generateChangelog(verbose = false) {
         }
       }
       
-      // Format the commit message
-      let formattedMessage = `- ${description} (${hash.substring(0, 7)})`;
-      if (scope) {
-        formattedMessage = `- **${scope}**: ${description} (${hash.substring(0, 7)})`;
-      }
-      
-      // Add body details if present and not just whitespace
+      // Format the commit message in the new concise format
+      // Extract the first line of the body as additional context
+      let bodyFirstLine = '';
       if (body && body.trim()) {
-        // Extract relevant parts of the body, ignoring BREAKING CHANGE sections
         const relevantBody = body
           .split('\n')
           .filter(line => !line.trim().startsWith('BREAKING CHANGE:'))
           .join('\n')
           .trim()
-          // Remove any commit-end markers
           .replace(/(?:<\/commit-end>|--COMMIT--)/g, '');
           
         if (relevantBody) {
-          formattedMessage += `\n  ${relevantBody.split('\n').join('\n  ')}`;
+          // Get the first non-empty line of the body
+          const firstLine = relevantBody.split('\n').find(line => line.trim());
+          if (firstLine) {
+            bodyFirstLine = `: ${firstLine.trim()}`;
+          }
         }
       }
+      
+      // Format: - <sha> - <description><: first line of body if exists>
+      const formattedMessage = `- ${hash.substring(0, 7)} - ${description}${bodyFirstLine}`;
       
       // Add to the appropriate category
       const category = CATEGORIES[type] || CATEGORIES.chore;
