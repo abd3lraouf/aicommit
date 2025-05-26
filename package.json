@@ -1,6 +1,6 @@
 {
   "name": "@abd3lraouf/aicommit",
-  "version": "2.0.5",
+  "version": "2.1.0",
   "description": "Smart Git commit messages with AI - automatically generates conventional commits with emojis",
   "main": "dist/index.js",
   "bin": {
