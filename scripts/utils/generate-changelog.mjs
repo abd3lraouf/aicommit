@@ -183,7 +183,7 @@ function generateChangelog(verbose = false) {
       if (commits && commits.length > 0) {
         changelog += `### ${categoryName}\n\n`;
         commits.forEach(commit => {
-          changelog += `${commit}\n\n`;
+          changelog += `${commit}\n`;
         });
       }
     });
