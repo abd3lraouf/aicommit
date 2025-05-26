@@ -50,14 +50,31 @@ async function main() {
   const isCI = process.env.CI === 'true' || process.env.NODE_ENV === 'test';
   const isSilent = process.env.npm_config_loglevel === 'silent' || process.argv.includes('--silent');
   
-  // Skip output in CI or silent mode
-  if (isCI || isSilent) {
+  // For global installations, we want to show output even if it seems "silent"
+  // Only skip in actual CI environments or explicit test mode
+  const isGlobalInstall = process.env.npm_config_global === 'true' || 
+                         process.cwd().includes('pnpm/global') ||
+                         process.cwd().includes('.npm/global');
+  
+  // Skip output only in actual CI or test environments, not for global installs
+  if (isCI && !isGlobalInstall) {
     return;
   }
 
-  // Add a small delay to ensure output is visible after pnpm build approval
+  // Add a longer delay for pnpm to ensure output is visible after build approval
   if (process.env.npm_config_user_agent?.includes('pnpm')) {
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise(resolve => setTimeout(resolve, 500));
+  }
+
+  // Debug logging for troubleshooting (only in global installs)
+  if (isGlobalInstall && process.env.DEBUG_POSTINSTALL) {
+    console.log('DEBUG: Postinstall environment:');
+    console.log('- isCI:', isCI);
+    console.log('- isSilent:', isSilent);
+    console.log('- isGlobalInstall:', isGlobalInstall);
+    console.log('- cwd:', process.cwd());
+    console.log('- npm_config_global:', process.env.npm_config_global);
+    console.log('- npm_config_user_agent:', process.env.npm_config_user_agent);
   }
 
   const hasModules = await importModules();
@@ -102,6 +119,11 @@ ${chalk.cyan('https://github.com/abd3lraouf/aicommit#readme')}
 
 📖 Documentation: https://github.com/abd3lraouf/aicommit#readme
 `);
+  }
+
+  // Always show a minimal message for global installations to confirm it worked
+  if (isGlobalInstall) {
+    console.log('\n✅ AICommit postinstall completed successfully!');
   }
 }
 
