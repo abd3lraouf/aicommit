@@ -7,7 +7,7 @@ import { CommitChangesUseCase } from './core/use-cases/commit-changes.js';
 import { GitRepository } from './core/repositories/git-repository.js';
 import { AIRepository } from './core/repositories/ai-repository.js';
 import { GitRepositoryImpl } from './frameworks/git/git-repository-impl.js';
-import { DefaultAIRepositoryImpl } from './frameworks/default-ai/default-ai-repository-impl.js';
+import { LMStudioAIRepositoryImpl } from './frameworks/lmstudio/lmstudio-ai-repository-impl.js';
 import { CliPresenter, CliOptions } from './frameworks/cli/cli-presenter.js';
 import { setDebugMode } from './frameworks/cli/debug.js';
 import { initializeConfig, getCliOptions } from './config/index.js';
@@ -70,7 +70,7 @@ export class App {
       
       // Initialize repositories now that config is loaded
       this.gitRepository = new GitRepositoryImpl();
-      this.aiRepository = new DefaultAIRepositoryImpl();
+      this.aiRepository = new LMStudioAIRepositoryImpl();
       
       // Initialize use cases
       this.generateCommitMessageUseCase = new GenerateCommitMessageUseCase(

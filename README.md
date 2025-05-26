@@ -8,7 +8,7 @@
 
 ## What is AICommit?
 
-AICommit analyzes your code changes and automatically writes professional commit messages following the [Conventional Commits](https://conventionalcommits.org/) standard. It works with **[LM Studio](https://lmstudio.ai/)** to run AI models locally on your machine - no cloud services or API keys required!
+AICommit analyzes your code changes and automatically writes professional commit messages following the [Conventional Commits](https://conventionalcommits.org/) standard. It uses the **[LM Studio JavaScript SDK](https://github.com/lmstudio-ai/lmstudio-js)** to communicate with **[LM Studio](https://lmstudio.ai/)** and run AI models locally on your machine - no cloud services or API keys required!
 
 **Before AICommit:**
 ```bash
@@ -68,12 +68,13 @@ aicommit
 ## Features
 
 - **🤖 Smart Analysis**: Understands your code changes and writes appropriate messages
-- **🏠 Local AI**: Powered by LM Studio - runs entirely on your machine, no cloud required
+- **🏠 Local AI**: Powered by LM Studio SDK - runs entirely on your machine, no cloud required
 - **📏 Adaptive Detail**: Small changes get short messages, big changes get detailed ones
 - **😊 Emoji Support**: Automatically adds relevant emojis to your commits
 - **🔄 Interactive Mode**: Review and edit messages before committing
 - **⚙️ Configurable**: Customize everything to match your workflow
 - **🔒 Privacy First**: Your code never leaves your machine
+- **🎯 Structured Output**: Uses Zod schemas for reliable, type-safe AI responses
 
 ## Installation
 
@@ -297,11 +298,14 @@ This shows:
 Verify everything is working:
 
 ```bash
-# Test API connection
-curl http://localhost:1234/v1/models
+# Test LM Studio SDK integration
+npm run test:lmstudio
 
 # Test AICommit with dry run
 aicommit --dry-run --debug
+
+# Legacy API test (for comparison)
+npm run test:api
 ```
 
 ## How It Works
