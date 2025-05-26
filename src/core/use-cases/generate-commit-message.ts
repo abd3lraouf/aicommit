@@ -2,7 +2,7 @@
  * Use case for generating commit messages with AI
  */
 
-import { GitStatus, FileChanges } from '../entities/git.js';
+import { GitStatus, FileChanges, analyzeGitChanges, GitChangeAnalysis } from '../entities/git.js';
 import { GitRepository } from '../repositories/git-repository.js';
 import { AIRepository } from '../repositories/ai-repository.js';
 import { debugLog } from '../../frameworks/cli/debug.js';
@@ -17,9 +17,10 @@ export class GenerateCommitMessageUseCase {
    * Create a prompt for the AI based on Git status and file changes
    * @param status Git repository status
    * @param changes Detailed file changes
+   * @param analysis Git change analysis for dynamic schema
    * @returns Formatted prompt string
    */
-  private createPrompt(status: GitStatus, changes: FileChanges): string {
+  private createPrompt(status: GitStatus, changes: FileChanges, analysis: GitChangeAnalysis): string {
     return `Generate a concise, best-practice Git commit message based on these changes:
 
 Staged files:
@@ -33,6 +34,11 @@ ${status.untracked}
 
 Changes in staged files:
 ${changes.staged_diff.substring(0, 10000)}
+
+Change Analysis:
+- Total files changed: ${analysis.totalChangeCount}
+- Added: ${analysis.addedFileCount}, Modified: ${analysis.modifiedFileCount}, Deleted: ${analysis.deletedFileCount}
+- Expected bullet points: ${analysis.suggestedBulletPoints.min}-${analysis.suggestedBulletPoints.max}
 
 Your output should be in JSON format according to this structure:
 Follow the Conventional Commits specification (conventionalcommits.org) with the following structure:
@@ -84,6 +90,7 @@ Follow the Conventional Commits specification (conventionalcommits.org) with the
    - List specific changes as bullet points
    - Be specific about what changed
    - Use imperative mood consistently
+   - Provide ${analysis.suggestedBulletPoints.min} to ${analysis.suggestedBulletPoints.max} bullet points based on the ${analysis.totalChangeCount} file changes
 
 7. For breaking changes:
    - Add ! before the colon: feat!: or feat(scope)!:
@@ -124,13 +131,24 @@ Follow the Conventional Commits specification (conventionalcommits.org) with the
     debugLog('UseCase', 'Getting detailed file changes');
     const fileChanges = await this.gitRepository.getFileChanges();
     
-    // Create prompt for AI
-    debugLog('UseCase', 'Creating prompt for AI');
-    const prompt = this.createPrompt(status, fileChanges);
+    // Analyze git changes for dynamic schema
+    debugLog('UseCase', 'Analyzing git changes for dynamic schema');
+    const changeAnalysis = analyzeGitChanges(status, fileChanges);
+    debugLog('UseCase', 'Change analysis:', {
+      totalFiles: changeAnalysis.totalChangeCount,
+      added: changeAnalysis.addedFileCount,
+      modified: changeAnalysis.modifiedFileCount,
+      deleted: changeAnalysis.deletedFileCount,
+      suggestedBulletPoints: changeAnalysis.suggestedBulletPoints
+    });
     
-    // Generate commit message using AI
-    debugLog('UseCase', 'Generating commit message using API');
-    const commitMessage = await this.aiRepository.generateCommitMessage(prompt);
+    // Create prompt for AI with change analysis
+    debugLog('UseCase', 'Creating prompt for AI with dynamic schema context');
+    const prompt = this.createPrompt(status, fileChanges, changeAnalysis);
+    
+    // Generate commit message using AI with change analysis
+    debugLog('UseCase', 'Generating commit message using API with dynamic schema');
+    const commitMessage = await this.aiRepository.generateCommitMessage(prompt, changeAnalysis);
     
     // Message now comes formatted from the API with emojis
     debugLog('UseCase', 'Commit message generated successfully');
