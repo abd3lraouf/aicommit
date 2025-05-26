@@ -6,11 +6,16 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
 import * as child_process from 'child_process';
+import { fileURLToPath } from 'url';
 import yargs from 'yargs';
 import chalk from 'chalk';
 import boxen from 'boxen';
 import { styles } from './styles.js';
 import { CliOptions as ConfigCliOptions } from '../../config/index.js';
+
+// ES module compatibility
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export interface CliOptions extends ConfigCliOptions {
   // Extended CLI options with API configuration
@@ -232,14 +237,29 @@ export class CliPresenter {
    * Run the interactive configuration setup
    */
   runConfigSetup(): void {
-    const configScript = path.resolve(
-      process.cwd(),
-      'scripts',
-      'setup',
-      'setup-config.mjs'
-    );
+    // Try multiple possible locations for the setup script
+    const possiblePaths = [
+      // When running from installed package (global or local)
+      path.resolve(path.dirname(process.argv[1]), '..', 'scripts', 'setup', 'setup-config.mjs'),
+      // When running from development
+      path.resolve(process.cwd(), 'scripts', 'setup', 'setup-config.mjs'),
+      // When running from dist directory
+      path.resolve(path.dirname(process.argv[1]), '..', '..', 'scripts', 'setup', 'setup-config.mjs'),
+      // Alternative path for global installations
+      path.resolve(__dirname, '..', '..', '..', 'scripts', 'setup', 'setup-config.mjs')
+    ];
+
+    let configScript: string | null = null;
     
-    if (fs.existsSync(configScript)) {
+    // Find the first existing script
+    for (const scriptPath of possiblePaths) {
+      if (fs.existsSync(scriptPath)) {
+        configScript = scriptPath;
+        break;
+      }
+    }
+    
+    if (configScript) {
       console.log(styles.infoText('Running interactive configuration setup...'));
       try {
         // Run the setup-config.mjs script
@@ -252,7 +272,11 @@ export class CliPresenter {
         console.error(styles.errorText(`Error running configuration setup: ${error}`));
       }
     } else {
-      console.error(styles.errorText(`Configuration setup script not found at: ${configScript}`));
+      console.error(styles.errorText('Configuration setup script not found.'));
+      console.error(styles.infoText('Searched in the following locations:'));
+      possiblePaths.forEach(p => console.error(`  - ${p}`));
+      console.error(styles.infoText('\nYou can manually create a .aicommitrc.json file instead.'));
+      console.error(styles.infoText('See the README for configuration examples.'));
     }
   }
 }
